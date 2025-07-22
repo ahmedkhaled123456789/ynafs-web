@@ -34,17 +34,19 @@ const SubjectsPage = () => {
           >
             <div className="mb-4"><FaBook size={70} /></div>
             <div className="text-lg font-semibold text-center mb-4">{subject.title}</div>
-            {subject.books?(
-              <a
-href={`${(import.meta.env.DEV ? baseURL: "") + subject.books[0]?.path}`}
-  download={subject.books[0]?.title+".pdf"}
-  className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800 transition flex items-center gap-2"
->
-  <FaDownload /> تحميل الكتاب
-</a>
-            ):(
-              <p>الكتاب غير متاح الان    </p>
-            )}
+           {subject.books && subject.books.length > 0 ? (
+  <a
+    href={`${(import.meta.env.DEV ? baseURL : "") + subject.books[0]?.path}`}
+    download={subject.books[0]?.title + ".pdf"}
+    className="mt-4 inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition"
+  >
+    <FaDownload />
+    تحميل الكتاب
+  </a>
+) : (
+  <p className="mt-4 text-red-600 font-medium">الكتاب غير متاح الآن</p>
+)}
+
     
 
 
