@@ -1,8 +1,9 @@
-import { useEffect } from "react";
-import { FaBook } from "react-icons/fa";
+import { useEffect } from "react"; 
+import { FaBook ,FaDownload} from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getSubjects } from "../store/categoriesSlice";
+import { baseURL } from "../Api/baseURL";
  const useQuery = () => new URLSearchParams(useLocation().search);
 
 const SubjectsPage = () => {
@@ -27,14 +28,28 @@ const SubjectsPage = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-6xl">
         {subjects.map((subject, index) => (
-          <Link
-            to={`/Units?subjectId=${subject._id}`}
+          <div
             key={subject._id || index}
-    className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:bg-[#0093e9] hover:text-white transition"
+            className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center "
           >
             <div className="mb-4"><FaBook size={70} /></div>
-            <div className="text-lg font-semibold text-center">{subject.title}</div>
-          </Link>
+            <div className="text-lg font-semibold text-center mb-4">{subject.title}</div>
+            {subject.books?(
+              <a
+href={`${(import.meta.env.DEV ? baseURL: "") + subject.books[0]?.path}`}
+  download={subject.books[0]?.title+".pdf"}
+  className="mt-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800 transition flex items-center gap-2"
+>
+  <FaDownload /> تحميل الكتاب
+</a>
+            ):(
+              <p>الكتاب غير متاح الان    </p>
+            )}
+    
+
+
+           
+          </div>
         ))}
       </div>
     </div>
@@ -42,4 +57,3 @@ const SubjectsPage = () => {
 };
 
 export default SubjectsPage;
-

@@ -28,7 +28,14 @@ export const getLevels= createAsyncThunk('levels/getLevels', async (id, thunkAPI
     return thunkAPI.rejectWithValue(error.response.data);
   }
 });
-
+export const getSubLevels= createAsyncThunk('levels/getSubLevels', async (id, thunkAPI) => {
+  try {
+    const res = await useGetData(`api/books/levels?parent=${id}`);
+    return res;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+});
 export const getSemesters= createAsyncThunk('semesters/getSemesters', async (id, thunkAPI) => {
   try {
     const res = await useGetData(`/api/books/semesters?level=${id}`);
@@ -68,6 +75,7 @@ const initialState = {
   categories: [],
   stages:[],
   levels: [],
+  subLevels: [],
   semesters: [],
   subjects: [],
   units: [],
@@ -92,6 +100,9 @@ const categoriesSlice = createSlice({
      })
     builder.addCase(getLevels.fulfilled, (state, action) => {
       state.levels=action.payload;
+     })
+      builder.addCase(getSubLevels.fulfilled, (state, action) => {
+      state.subLevels=action.payload;
      })
       builder.addCase(getSemesters.fulfilled, (state, action) => {
       state.semesters=action.payload;
