@@ -22,14 +22,65 @@ const StagesPage = () => {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100 flex flex-col">
       
-       <div className="bg-[#0093e9] text-white text-center py-6 shadow-md">
-        <h1 className="text-2xl sm:text-3xl font-bold">
-          الكتب الدراسية - التعليم العام بالمملكة العربية السعودية لعام 1447 هـ
-        </h1>
-      </div>
+       <div className="bg-[#0093e9] text-white px-6 py-6 shadow-md">
+  <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+    
+    {/* Title */}
+    <h1 className="text-center sm:text-right text-2xl sm:text-3xl font-bold leading-relaxed">
+      الكتب الدراسية - التعليم العام بالمملكة العربية السعودية لعام 1447 هـ
+    </h1>
+
+    {/* Logo */}
+    <img
+      src="/images/logo192.ico"
+      alt="Logo"
+      className="w-14 h-14 sm:w-16 sm:h-16 rounded shadow-md"
+    />
+  </div>
+</div>
+
+  {/* Breadcrumb */}
+  <nav aria-label="Breadcrumb" className="flex m-8">
+  <ol className="flex overflow-hidden rounded-lg border border-gray-200 text-gray-600 bg-white shadow">
+    
+     <li className="flex items-center">
+      <a
+        href="/"
+        className="flex h-10 items-center gap-1.5 bg-gray-100 px-4 transition hover:text-gray-900 text-blue-600 font-semibold"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+          />
+        </svg>
+        <span className="ms-1.5 text-xs font-medium">الرئيسية</span>
+      </a>
+    </li>
+
+     <li className="relative flex items-center">
+      <span className="absolute inset-y-0 -start-px h-10 w-4 bg-gray-100 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"></span>
+      
+       <span
+        className="flex h-10 items-center pe-4 ps-8 text-xs font-medium text-gray-400 cursor-default"
+      >
+        المراحل الدراسية
+      </span>
+    </li>
+  </ol>
+</nav>
 
        <div className="flex flex-col items-center p-12">
-        <h2 className="text-3xl font-bold mb-8">المراحل</h2>
+        <h2 className="text-3xl font-bold mb-8">المراحل الدراسية
+</h2>
 
         {loading && <p className="text-gray-500">جاري التحميل...</p>}
         {error && <p className="text-red-500">{error}</p>}
