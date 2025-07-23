@@ -1,19 +1,17 @@
+import { BrowserRouter } from "react-router-dom";
+import "./App.css";
+import Routers from "./Routes/Routers";
+import Nav from "./components/Nav";
 
-import { BrowserRouter } from 'react-router-dom'
-import './App.css'
-import LevelsPage from './pages/LevelsPage'
-import SemestersPage from './pages/SemestersPage'
-import StagesPage from './pages/StagesPage'
-import SubjectsPage from './pages/SubjectsPage'
-import Routers from './Routes/Routers'
 function App() {
   return (
     <>
- <BrowserRouter>
-      <Routers />
-    </BrowserRouter>    </>
-
-  )
+      <Nav />
+      <BrowserRouter basename="/books">
+        <Routers />
+      </BrowserRouter>
+    </>
+  );
 }
 
-export default App
+export default App;

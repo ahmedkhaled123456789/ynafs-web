@@ -39,26 +39,6 @@ const SubLevelsPage = () => {
 
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100 ">
-
-     <div className="bg-[#0093e9] text-white px-6 py-6 shadow-md">
-  <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-    
-    {/* Title */}
-    <h1 className="text-center sm:text-right text-2xl sm:text-3xl font-bold leading-relaxed">
-      الكتب الدراسية - التعليم العام بالمملكة العربية السعودية لعام 1447 هـ
-    </h1>
-
-    {/* Logo */}
-    <Link to="/">
-      <img
-      src="/images/logo1.png"
-      alt="Logo"
-      className="w-14 h-14 sm:w-16 sm:h-16 rounded"
-    />
-    </Link>
-  </div>
-</div>
-
   {/* Breadcrumb */}
   <nav aria-label="Breadcrumb" className="flex m-8">
   <ol className="flex overflow-hidden rounded-lg border border-gray-200 text-gray-600 bg-white shadow">
