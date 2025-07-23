@@ -49,11 +49,13 @@ const SubLevelsPage = () => {
     </h1>
 
     {/* Logo */}
-    <img
-      src="/images/logo192.ico"
+    <Link to="/">
+      <img
+      src="/images/logo1.png"
       alt="Logo"
-      className="w-14 h-14 sm:w-16 sm:h-16 rounded shadow-md"
+      className="w-14 h-14 sm:w-16 sm:h-16 rounded"
     />
+    </Link>
   </div>
 </div>
 
