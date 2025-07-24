@@ -25,8 +25,6 @@ const SubjectsPage = () => {
     (state) => state.category
   );
 
-  console.log({ subjects, loading, error, semesters, levels, stages });
-
   // تحميل المواد
   useEffect(() => {
     if (semesterId) {
