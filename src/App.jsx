@@ -15,7 +15,9 @@ function App() {
     if (savedPath) {
       dispatch(setBreadcrumbPath(JSON.parse(savedPath)));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <>
       <InitDataLoader />

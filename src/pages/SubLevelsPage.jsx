@@ -22,13 +22,7 @@ const SubLevelsPage = () => {
 
   // نجيب subLevels والloading والerror
   const { subLevels, loading, error, levels, stages } = useSelector(
-    (state) => ({
-      subLevels: state.category.subLevels,
-      loading: state.category.loading.subLevels,
-      error: state.category.error?.subLevels || null,
-      levels: state.category.levels,
-      stages: state.category.stages,
-    })
+    (state) => state.category
   );
 
   // 1. Load data when levelId changes
@@ -36,7 +30,8 @@ const SubLevelsPage = () => {
     if (levelId) {
       dispatch(getSubLevels(levelId));
     }
-  }, [dispatch, levelId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [levelId]);
 
   // 2. Build breadcrumb after levels and stages are available
   useEffect(() => {
@@ -66,7 +61,8 @@ const SubLevelsPage = () => {
         );
       }
     }
-  }, [dispatch, levelId, levels, stages]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [levelId]);
 
   const handleLevelClick = async (subLevelId) => {
     const clickedSubLevel = subLevels.find((sl) => sl._id === subLevelId);
@@ -97,12 +93,12 @@ const SubLevelsPage = () => {
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">الصفوف الفرعية</h1>
 
-        {loading && (
+        {loading?.subLevels && (
           <p className="text-blue-500 animate-pulse text-lg">جاري التحميل...</p>
         )}
-        {error && <p className="text-red-500">{error}</p>}
+        {error?.subLevels && <p className="text-red-500">{error?.subLevels}</p>}
 
-        {!loading && subLevels.length === 0 && (
+        {!loading?.subLevels && subLevels.length === 0 && (
           <p className="text-gray-500 text-md">لا توجد صفوف فرعية متاحة.</p>
         )}
 
