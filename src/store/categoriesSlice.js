@@ -7,7 +7,7 @@ export const getCategories = createAsyncThunk(
   async (_id, thunkAPI) => {
     try {
       const res = await axiosRequest.get(`/api/books/categories`);
-      return res;
+      return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
@@ -19,7 +19,7 @@ export const getStages = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const res = await axiosRequest.get(`/api/books/stages?category=${id}`);
-      return res;
+      return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
@@ -31,7 +31,7 @@ export const getLevels = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const res = await axiosRequest.get(`api/books/levels?stage=${id}`);
-      return res;
+      return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
@@ -43,7 +43,7 @@ export const getSubLevels = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const res = await axiosRequest.get(`api/books/levels?parent=${id}`);
-      return res;
+      return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
@@ -55,7 +55,7 @@ export const getSemesters = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const res = await axiosRequest.get(`/api/books/semesters?level=${id}`);
-      return res;
+      return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
@@ -66,10 +66,8 @@ export const getSubjects = createAsyncThunk(
   "subjects/getSubjects",
   async (id, thunkAPI) => {
     try {
-      const res = filterCurrentYearBooks(
-        await axiosRequest.get(`/api/books/subjects?semester=${id}`)
-      );
-      return res;
+      const res = await axiosRequest.get(`/api/books/subjects?semester=${id}`);
+      return filterCurrentYearBooks(res.data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
@@ -81,7 +79,7 @@ export const getUnits = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const res = await axiosRequest.get(`/api/books/units?subject=${id}`);
-      return res;
+      return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
@@ -93,7 +91,7 @@ export const getLessons = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const res = await axiosRequest.get(`/api/books/lessons?parent=${id}`);
-      return res;
+      return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }

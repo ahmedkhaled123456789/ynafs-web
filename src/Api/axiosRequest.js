@@ -6,6 +6,8 @@ const axiosRequest = axios.create({ baseURL });
 
 axiosRequest.interceptors.request.use(
   (config) => {
+    if (!config.url) return config;
+
     const token = localStorage.getItem("token");
 
     // skip when header set or token not exists
