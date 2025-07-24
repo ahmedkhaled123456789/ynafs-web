@@ -15,8 +15,7 @@ const StagesPage = () => {
   dispatch(resetBreadcrumbPath());
 
   dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
-  dispatch(addBreadcrumbItem({ title: "المراحل الدراسية", path: "/StagesPage" }));
-}, [dispatch]);
+ }, [dispatch]);
 
 
   useEffect(() => {
@@ -27,15 +26,13 @@ const StagesPage = () => {
   }, [dispatch, categories]);
 
   const handleStageClick = (stage) => {
-    // إضافة المرحلة إلى breadcrumb
-    dispatch(
+     dispatch(
       addBreadcrumbItem({
         title: stage.title,
         path: `/LevelsPage?stageId=${stage._id}`,
       })
     );
-    // الانتقال للصفحة الجديدة
-    navigate(`/LevelsPage?stageId=${stage._id}`);
+     navigate(`/LevelsPage?stageId=${stage._id}`);
   };
 
   return (

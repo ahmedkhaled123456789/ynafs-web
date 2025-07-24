@@ -36,8 +36,7 @@ useEffect(() => {
   if (levelId && levels.length > 0 && stages.length > 0) {
     dispatch(resetBreadcrumbPath());
     dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
-    dispatch(addBreadcrumbItem({ title: "المراحل الدراسية", path: "/StagesPage" }));
-
+ 
     const currentLevel = levels.find((lvl) => lvl._id === levelId);
     if (currentLevel) {
       const currentStage = stages.find((stg) => stg._id === currentLevel.stage);
@@ -50,7 +49,7 @@ useEffect(() => {
 
       dispatch(addBreadcrumbItem({
         title: currentLevel.title,
-        path: `/SubLevelsPage?levelId=${levelId}`
+        path: `/LevelsPage?levelId=${levelId}`
       }));
     }
   }

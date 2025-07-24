@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { FaLayerGroup } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getUnits, addBreadcrumbItem, resetBreadcrumbPath } from "../store/categoriesSlice";
-
+import { getUnits, addBreadcrumbItem, resetBreadcrumbPath, getSubjects, getLevels, getStages, getSemesters } from "../store/categoriesSlice";
+import Breadcrumb from "../components/Breadcrumb"; // ✅
 const useQuery = () => new URLSearchParams(useLocation().search);
 
 const UnitsPage = () => {
@@ -12,43 +12,94 @@ const UnitsPage = () => {
 
   const dispatch = useDispatch();
 
-  // جلب البيانات اللازمة للبردكرم من الستور
-  const { units, subjects, semesters, loading, error } = useSelector((state) => ({
+  const { levels,units,stages, subjects, semesters, loading, error } = useSelector((state) => ({
     units: state.category.units,
     subjects: state.category.subjects,
     semesters: state.category.semesters,
+        levels: state.category.levels,
     loading: state.category.loading.units,
     error: state.category.error.units,
-  }));
+        stages: state.category.stages,
 
+  }));
+// تحميل الوحدات
   useEffect(() => {
     if (subjectId) {
       dispatch(getUnits(subjectId));
+    }
+  }, [dispatch, subjectId]);
 
-      // إعادة تعيين breadcrumb و إضافات جديدة
-      dispatch(resetBreadcrumbPath());
-      dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
-      dispatch(addBreadcrumbItem({ title: "المراحل الدراسية", path: "/StagesPage" }));
-
-      // ابحث عن السيمستر الحالي والموضوع الحالي
-      const currentSemester = semesters.find((sem) => sem._id === subjects.find(sub => sub._id === subjectId)?.semester);
+  // تحميل البيانات الأساسية لو مش موجودة
+  useEffect(() => {
+    if (subjectId) {
       const currentSubject = subjects.find((sub) => sub._id === subjectId);
+      const semesterId = currentSubject?.semester;
 
-      if (currentSemester) {
-        dispatch(addBreadcrumbItem({ title: currentSemester.title, path: `/Subjects?semesterId=${currentSemester._id}` }));
+      if (semesterId && semesters.length === 0) {
+        dispatch(getSemesters());
       }
-      if (currentSubject) {
-        dispatch(addBreadcrumbItem({ title: currentSubject.title, path: `/Units?subjectId=${currentSubject._id}` }));
+
+      if (subjects.length === 0) {
+        dispatch(getSubjects(semesterId));
+      }
+
+      if (levels.length === 0) {
+        dispatch(getLevels());
+      }
+
+      if (stages.length === 0) {
+        dispatch(getStages());
       }
     }
-  }, [dispatch, subjectId, semesters, subjects]);
+  }, [dispatch, subjectId, subjects, semesters, levels, stages]);
+
+  // بناء مسار التنقل Breadcrumb
+  useEffect(() => {
+    if (subjectId && subjects.length && semesters.length && levels.length && stages.length) {
+      const currentSubject = subjects.find((sub) => sub._id === subjectId);
+      const semesterId = currentSubject?.semester;
+      const currentSemester = semesters.find((sem) => sem._id === semesterId);
+      const currentLevel = levels.find((lvl) => lvl._id === currentSemester?.level);
+      const currentStage = stages.find((stg) => stg._id === currentLevel?.stage);
+
+      dispatch(resetBreadcrumbPath());
+      dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
+ 
+      if (currentStage) {
+        dispatch(addBreadcrumbItem({
+          title: currentStage.title,
+          path: `/LevelsPage?stageId=${currentStage._id}`,
+        }));
+      }
+
+      if (currentLevel) {
+        dispatch(addBreadcrumbItem({
+          title: currentLevel.title,
+          path: `/LevelsPage?levelId=${currentLevel._id}`,
+        }));
+      }
+
+      if (currentSemester && currentSemester.title !== "الفصل الدراسي الأول") {
+        dispatch(addBreadcrumbItem({
+          title: currentSemester.title,
+          path: `/Subjects?semesterId=${currentSemester._id}`,
+        }));
+      }
+
+      if (currentSubject) {
+        dispatch(addBreadcrumbItem({
+          title: currentSubject.title,
+          path: `/Units?subjectId=${currentSubject._id}`,
+        }));
+      }
+    }
+  }, [dispatch, subjectId, subjects, semesters, levels, stages]);
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gray-100 flex flex-col items-center p-12">
-      {/* لو عندك مكون Breadcrumb تضيفه هنا */}
-      {/* <Breadcrumb /> */}
-
-      <h1 className="text-3xl font-bold mb-8">الوحدات الدراسية</h1>
+    <div dir="rtl" className="min-h-screen bg-gray-100 ">
+      <Breadcrumb />
+      <div className="flex flex-col items-center p-12">
+          <h1 className="text-3xl font-bold mb-8">الوحدات الدراسية</h1>
 
       {loading && <p className="text-gray-500">جاري التحميل...</p>}
       {error && <p className="text-red-500">{error}</p>}
@@ -65,6 +116,9 @@ const UnitsPage = () => {
           </Link>
         ))}
       </div>
+      </div>
+
+    
     </div>
   );
 };

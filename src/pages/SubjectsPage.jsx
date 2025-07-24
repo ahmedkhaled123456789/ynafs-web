@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { FaBook, FaDownload } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getSubjects, addBreadcrumbItem, resetBreadcrumbPath, getLevels, getSemesters, getStages } from "../store/categoriesSlice";
 import { baseURL } from "../Api/baseURL";
@@ -30,16 +30,15 @@ useEffect(() => {
   }
 }, [dispatch, semesterId]);
 
-// تحميل البيانات الأساسية لو مش موجودة
-useEffect(() => {
+ useEffect(() => {
   if (semesterId && semesters.length === 0) {
-    dispatch(getSemesters()); // لو مش جاية من قبل
+    dispatch(getSemesters());  
   }
   if (levels.length === 0) {
-    dispatch(getLevels()); // تحميل الصفوف
+    dispatch(getLevels());  
   }
   if (stages.length === 0) {
-    dispatch(getStages()); // تحميل المراحل
+    dispatch(getStages());  
   }
 }, [dispatch, semesterId, semesters.length, levels.length, stages.length]);
 
@@ -48,7 +47,6 @@ useEffect(() => {
   if (semesterId && semesters.length && levels.length && stages.length) {
     dispatch(resetBreadcrumbPath());
     dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
-    dispatch(addBreadcrumbItem({ title: "المراحل الدراسية", path: "/StagesPage" }));
 
     const currentSemester = semesters.find((sem) => sem._id === semesterId);
     if (currentSemester) {
@@ -64,14 +62,17 @@ useEffect(() => {
 
         dispatch(addBreadcrumbItem({
           title: currentLevel.title,
-          path: `/SubLevelsPage?levelId=${currentLevel._id}`,
+          path: `/LevelsPage?stageId=${currentLevel._id}`,
         }));
       }
 
-      dispatch(addBreadcrumbItem({
-        title: currentSemester.title,
-        path: `/Subjects?semesterId=${semesterId}`,
-      }));
+      // ✅ تجاهل إضافة الفصل الدراسي الأول
+      if (currentSemester.title !== "الفصل الدراسي الأول") {
+        dispatch(addBreadcrumbItem({
+          title: currentSemester.title,
+          path: `/Subjects?semesterId=${semesterId}`,
+        }));
+      }
     }
   }
 }, [dispatch, semesterId, semesters, levels, stages]);
@@ -97,7 +98,8 @@ useEffect(() => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-6xl">
           {subjects.map((subject, index) => (
-            <div
+            <Link
+            to={`/Units?subjectId=${subject._id}`}
               key={subject._id || index}
               className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center text-center"
             >
@@ -129,7 +131,7 @@ useEffect(() => {
               ) : (
                 <p className="mt-4 text-red-600 font-medium">الكتاب غير متاح الآن</p>
               )}
-            </div>
+            </Link>
           ))}
         </div>
       </div>

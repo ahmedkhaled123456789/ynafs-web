@@ -11,7 +11,7 @@ const Breadcrumb = () => {
           const isLast = index === breadcrumbPath.length - 1;
            let title = item.title;
           if (title === "الفصل الدراسي الأول") {
-            title = "المواد الدراسية";
+            return;
           }
 
           return (

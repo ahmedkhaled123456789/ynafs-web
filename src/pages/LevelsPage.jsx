@@ -27,8 +27,7 @@ const LevelsPage = () => {
   if (stageId && stages.length > 0) {
     dispatch(resetBreadcrumbPath());
     dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
-    dispatch(addBreadcrumbItem({ title: "المراحل الدراسية", path: "/StagesPage" }));
-
+ 
     const currentStage = stages.find((s) => s._id === stageId);
     if (currentStage) {
       dispatch(addBreadcrumbItem({ title: currentStage.title, path: `/LevelsPage?stageId=${stageId}` }));
