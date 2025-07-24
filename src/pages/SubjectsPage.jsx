@@ -22,15 +22,10 @@ const SubjectsPage = () => {
   const dispatch = useDispatch();
 
   const { subjects, loading, error, semesters, levels, stages } = useSelector(
-    (state) => ({
-      subjects: state.category.subjects,
-      loading: state.category.loading.subjects,
-      error: state.category.error?.subjects || null,
-      semesters: state.category.semesters,
-      levels: state.category.levels,
-      stages: state.category.stages,
-    })
+    (state) => state.category
   );
+
+  console.log({ subjects, loading, error, semesters, levels, stages });
 
   // تحميل المواد
   useEffect(() => {
@@ -104,28 +99,33 @@ const SubjectsPage = () => {
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">المواد الدراسية</h1>
 
-        {loading && (
+        {loading.subjects && (
           <div className="text-blue-600 font-medium animate-pulse text-lg mb-6">
             جاري التحميل...
           </div>
         )}
-        {error && <p className="text-red-500 font-semibold mb-6">{error}</p>}
+        {error?.subjects && (
+          <p className="text-red-500 font-semibold mb-6">{error?.subjects}</p>
+        )}
 
-        {!loading && subjects.length === 0 && (
+        {!loading.subjects && subjects.length === 0 && (
           <p className="text-gray-500">لا توجد مواد دراسية متاحة حالياً.</p>
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-6xl">
           {subjects.map((subject, index) => (
-            <Link
-              to={`/Units?subjectId=${subject._id}`}
+            <div
               key={subject._id || index}
               className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center text-center"
             >
               <div className="mb-4 text-blue-600">
                 <FaBook size={70} />
               </div>
-              <div className="text-lg font-semibold mb-4">{subject.title}</div>
+              <Link to={`/Units?subjectId=${subject._id}`}>
+                <div className="text-lg font-semibold mb-4">
+                  {subject.title}
+                </div>
+              </Link>
 
               {subject.books && subject.books.length > 0 ? (
                 subject.books.map((book) =>
@@ -152,7 +152,7 @@ const SubjectsPage = () => {
                   الكتاب غير متاح الآن
                 </p>
               )}
-            </Link>
+            </div>
           ))}
         </div>
       </div>
