@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { FaBook, FaDownload } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getSubjects } from "../store/categoriesSlice";
+import { getSubjects, addBreadcrumbItem, resetBreadcrumbPath, getLevels, getSemesters, getStages } from "../store/categoriesSlice";
 import { baseURL } from "../Api/baseURL";
 import Breadcrumb from "../components/Breadcrumb";
+
 const useQuery = () => new URLSearchParams(useLocation().search);
 
 const SubjectsPage = () => {
@@ -12,71 +13,126 @@ const SubjectsPage = () => {
   const semesterId = query.get("semesterId");
 
   const dispatch = useDispatch();
-  const { subjects, loading, error } = useSelector((state) => state.category);
 
-  useEffect(() => {
-    if (semesterId) {
-      dispatch(getSubjects(semesterId));
+  const { subjects, loading, error, semesters, levels, stages } = useSelector((state) => ({
+    subjects: state.category.subjects,
+    loading: state.category.loading.subjects,
+    error: state.category.error?.subjects || null,
+    semesters: state.category.semesters,
+    levels: state.category.levels,
+    stages: state.category.stages,
+  }));
+
+ // تحميل المواد
+useEffect(() => {
+  if (semesterId) {
+    dispatch(getSubjects(semesterId));
+  }
+}, [dispatch, semesterId]);
+
+// تحميل البيانات الأساسية لو مش موجودة
+useEffect(() => {
+  if (semesterId && semesters.length === 0) {
+    dispatch(getSemesters()); // لو مش جاية من قبل
+  }
+  if (levels.length === 0) {
+    dispatch(getLevels()); // تحميل الصفوف
+  }
+  if (stages.length === 0) {
+    dispatch(getStages()); // تحميل المراحل
+  }
+}, [dispatch, semesterId, semesters.length, levels.length, stages.length]);
+
+// بناء مسار التنقل Breadcrumb بعد توفر البيانات
+useEffect(() => {
+  if (semesterId && semesters.length && levels.length && stages.length) {
+    dispatch(resetBreadcrumbPath());
+    dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
+    dispatch(addBreadcrumbItem({ title: "المراحل الدراسية", path: "/StagesPage" }));
+
+    const currentSemester = semesters.find((sem) => sem._id === semesterId);
+    if (currentSemester) {
+      const currentLevel = levels.find((lvl) => lvl._id === currentSemester.level);
+      if (currentLevel) {
+        const currentStage = stages.find((stg) => stg._id === currentLevel.stage);
+        if (currentStage) {
+          dispatch(addBreadcrumbItem({
+            title: currentStage.title,
+            path: `/LevelsPage?stageId=${currentStage._id}`,
+          }));
+        }
+
+        dispatch(addBreadcrumbItem({
+          title: currentLevel.title,
+          path: `/SubLevelsPage?levelId=${currentLevel._id}`,
+        }));
+      }
+
+      dispatch(addBreadcrumbItem({
+        title: currentSemester.title,
+        path: `/Subjects?semesterId=${semesterId}`,
+      }));
     }
-  }, [dispatch, semesterId]);
+  }
+}, [dispatch, semesterId, semesters, levels, stages]);
 
   return (
-    <div
-      dir="rtl"
-      className="min-h-screen bg-gray-100 "
-    >
+    <div dir="rtl" className="min-h-screen bg-gray-100">
+      {/* Breadcrumb */}
+      <Breadcrumb />
 
-  {/* Breadcrumb */}
-  <Breadcrumb />
+      <div className="flex flex-col items-center p-12">
+        <h1 className="text-3xl font-bold mb-8">المواد الدراسية</h1>
 
-<div className="flex flex-col items-center p-12">
-   <h1 className="text-3xl font-bold mb-8">المواد الدراسية</h1>
-
-      {loading && <p className="text-gray-500">جاري التحميل...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-6xl">
-        {subjects.map((subject, index) => (
-          <div
-            key={subject._id || index}
-            className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center "
-          >
-            <div className="mb-4">
-              <FaBook size={70} />
-            </div>
-            <div className="text-lg font-semibold text-center mb-4">
-              {subject.title}
-            </div>
-            {subject.books && subject.books.length > 0 ? (
-              subject.books.map((e) => {
-                return e.title.includes("غلاف ") ? null : (
-                  <a
-                    key={e.path}
-                    href={
-                      !e?.path?.startsWith("http")
-                        ? (import.meta.env.DEV ? baseURL : "") + e?.path
-                        : e?.path
-                    }
-                    download={e?.title + ".pdf"}
-                    className="mt-4 inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition"
-                  >
-                    <FaDownload />
-                    <span className="text-center">
-                      {e.title.split("/")[1]?.trim() || e.title}
-                    </span>
-                  </a>
-                );
-              })
-            ) : (
-              <p className="mt-4 text-red-600 font-medium">
-                الكتاب غير متاح الآن
-              </p>
-            )}
+        {loading && (
+          <div className="text-blue-600 font-medium animate-pulse text-lg mb-6">
+            جاري التحميل...
           </div>
-        ))}
+        )}
+        {error && <p className="text-red-500 font-semibold mb-6">{error}</p>}
+
+        {!loading && subjects.length === 0 && (
+          <p className="text-gray-500">لا توجد مواد دراسية متاحة حالياً.</p>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-6xl">
+          {subjects.map((subject, index) => (
+            <div
+              key={subject._id || index}
+              className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center text-center"
+            >
+              <div className="mb-4 text-blue-600">
+                <FaBook size={70} />
+              </div>
+              <div className="text-lg font-semibold mb-4">{subject.title}</div>
+
+              {subject.books && subject.books.length > 0 ? (
+                subject.books.map((book) =>
+                  book.title.includes("غلاف ") ? null : (
+                    <a
+                      key={book.path}
+                      href={
+                        book?.path?.startsWith("http")
+                          ? book.path
+                          : (import.meta.env.DEV ? baseURL : "") + book.path
+                      }
+                      download={book?.title + ".pdf"}
+                      className="mt-2 inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition"
+                    >
+                      <FaDownload />
+                      <span className="text-sm">
+                        {book.title.split("/")[1]?.trim() || book.title}
+                      </span>
+                    </a>
+                  )
+                )
+              ) : (
+                <p className="mt-4 text-red-600 font-medium">الكتاب غير متاح الآن</p>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-</div>
-     
     </div>
   );
 };
