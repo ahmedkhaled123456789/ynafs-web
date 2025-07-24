@@ -6,9 +6,6 @@ import {
   getLevels,
   getSubLevels,
   getSemesters,
-  getSubjects,
-  getUnits,
-  getLessons,
 } from "../store/categoriesSlice.js";
 
 const InitDataLoader = () => {
@@ -16,44 +13,39 @@ const InitDataLoader = () => {
 
   useEffect(() => {
     const fetchAllData = async () => {
-      const categoriesRes = await dispatch(getCategories());
-      if (getCategories.fulfilled.match(categoriesRes)) {
-        const categoryId = categoriesRes.payload[0]?._id;
+      try {
+        if (!localStorage.getItem("categories")) {
+          const categoriesRes = await dispatch(getCategories());
+          if (!getCategories.fulfilled.match(categoriesRes)) return;
 
-        const stagesRes = await dispatch(getStages(categoryId));
-        if (getStages.fulfilled.match(stagesRes)) {
-          const stageId = stagesRes.payload[0]?._id;
+          const categoryId = categoriesRes.payload?.[0]?._id;
+          if (!categoryId) return;
+
+          const stagesRes = await dispatch(getStages(categoryId));
+          if (!getStages.fulfilled.match(stagesRes)) return;
+
+          const stageId = stagesRes.payload?.[0]?._id;
+          if (!stageId) return;
 
           const levelsRes = await dispatch(getLevels(stageId));
-          if (getLevels.fulfilled.match(levelsRes)) {
-            const levelId = levelsRes.payload[0]?._id;
+          if (!getLevels.fulfilled.match(levelsRes)) return;
 
-            await dispatch(getSubLevels(levelId));
-            const semestersRes = await dispatch(getSemesters(levelId));
-            if (getSemesters.fulfilled.match(semestersRes)) {
-              const semesterId = semestersRes.payload[0]?._id;
+          const levelId = levelsRes.payload?.[0]?._id;
+          if (!levelId) return;
 
-              const subjectsRes = await dispatch(getSubjects(semesterId));
-              if (getSubjects.fulfilled.match(subjectsRes)) {
-                const subjectId = subjectsRes.payload[0]?._id;
-
-                const unitsRes = await dispatch(getUnits(subjectId));
-                if (getUnits.fulfilled.match(unitsRes)) {
-                  const unitId = unitsRes.payload[0]?._id;
-
-                  await dispatch(getLessons(unitId));
-                }
-              }
-            }
-          }
+          await dispatch(getSubLevels(levelId));
+          await dispatch(getSemesters(levelId));
         }
+      } catch (error) {
+        console.error("خطأ في التحميل:", error);
       }
     };
 
     fetchAllData();
   }, [dispatch]);
 
-  return null; 
+  return null;
 };
+
 
 export default InitDataLoader;

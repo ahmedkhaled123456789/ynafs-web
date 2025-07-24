@@ -75,11 +75,11 @@ export const getLessons = createAsyncThunk("lessons/getLessons", async (id, thun
 });
 
 const initialState = {
-  categories: [],
-  stages: [],
-  levels: [],
-  subLevels: [],
-  semesters: [],
+  categories: JSON.parse(localStorage.getItem("categories")) || [],
+stages: JSON.parse(localStorage.getItem("stages")) || [],
+levels: JSON.parse(localStorage.getItem("levels")) || [],
+subLevels: JSON.parse(localStorage.getItem("subLevels")) || [],
+semesters: JSON.parse(localStorage.getItem("semesters")) || [],
   subjects: [],
   units: [],
   lessons: [],
@@ -137,6 +137,7 @@ addBreadcrumbItem: (state, action) => {
   const exists = state.breadcrumbPath.find((item) => item.path === action.payload.path);
   if (!exists) {
     state.breadcrumbPath.push(action.payload);
+    
     localStorage.setItem("breadcrumbPath", JSON.stringify(state.breadcrumbPath));
   }
 },
@@ -151,10 +152,13 @@ resetBreadcrumbPath: (state) => {
       .addCase(getCategories.pending, (state) => {
         state.loading.categories = true;
         state.error.categories = null;
+        
       })
       .addCase(getCategories.fulfilled, (state, action) => {
         state.categories = mergeUnique(state.categories, action.payload);
         state.loading.categories = false;
+          localStorage.setItem("categories", JSON.stringify(state.categories)); // ✅
+
       })
       .addCase(getCategories.rejected, (state, action) => {
         state.loading.categories = false;
@@ -167,6 +171,8 @@ resetBreadcrumbPath: (state) => {
       .addCase(getStages.fulfilled, (state, action) => {
         state.stages = mergeUnique(state.stages, action.payload);
         state.loading.stages = false;
+          localStorage.setItem("stages", JSON.stringify(state.stages)); // ✅
+
       })
       .addCase(getStages.rejected, (state, action) => {
         state.loading.stages = false;
@@ -180,6 +186,8 @@ resetBreadcrumbPath: (state) => {
       .addCase(getLevels.fulfilled, (state, action) => {
         state.levels = action.payload;
         state.loading.levels = false;
+          localStorage.setItem("levels", JSON.stringify(state.levels)); // ✅
+
       })
       .addCase(getLevels.rejected, (state, action) => {
         state.loading.levels = false;
@@ -193,6 +201,8 @@ resetBreadcrumbPath: (state) => {
       .addCase(getSubLevels.fulfilled, (state, action) => {
         state.subLevels = action.payload;
         state.loading.subLevels = false;
+          localStorage.setItem("subLevels", JSON.stringify(state.subLevels)); // ✅
+
       })
       .addCase(getSubLevels.rejected, (state, action) => {
         state.loading.subLevels = false;
@@ -206,6 +216,8 @@ resetBreadcrumbPath: (state) => {
       .addCase(getSemesters.fulfilled, (state, action) => {
         state.semesters = action.payload;
         state.loading.semesters = false;
+          localStorage.setItem("semesters", JSON.stringify(state.semesters)); // ✅
+
       })
       .addCase(getSemesters.rejected, (state, action) => {
         state.loading.semesters = false;

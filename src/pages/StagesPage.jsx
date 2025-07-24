@@ -2,28 +2,28 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSchool, FaUserGraduate, FaUniversity } from "react-icons/fa";
-import { getStages, getCategories, addBreadcrumbItem, resetBreadcrumbPath } from "../store/categoriesSlice";
+import {  addBreadcrumbItem, resetBreadcrumbPath } from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
 
 const StagesPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { categories, stages, loading, error } = useSelector((state) => state.category);
+  const { stages, loading, error } = useSelector((state) => state.category);
 
   useEffect(() => {
-  dispatch(getCategories());
+  // dispatch(getCategories());
   dispatch(resetBreadcrumbPath());
 
   dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
  }, [dispatch]);
 
 
-  useEffect(() => {
-    const catId = categories?.[0]?._id;
-    if (catId) {
-      dispatch(getStages(catId));
-    }
-  }, [dispatch, categories]);
+  // useEffect(() => {
+  //   const catId = categories?.[0]?._id;
+  //   if (catId) {
+  //     dispatch(getStages(catId));
+  //   }
+  // }, [dispatch, categories]);
 
   const handleStageClick = (stage) => {
      dispatch(

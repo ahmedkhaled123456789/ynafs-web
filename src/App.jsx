@@ -5,6 +5,7 @@ import Nav from "./components/Nav";
 import { useEffect } from "react";
 import { setBreadcrumbPath } from "./store/categoriesSlice";
 import { useDispatch } from "react-redux";
+import InitDataLoader from "./handlers/InitDataLoader";
 
 function App() {
     const dispatch = useDispatch();
@@ -17,6 +18,8 @@ function App() {
 }, []);
   return (
     <>
+      <InitDataLoader />
+
       <Nav />
       <BrowserRouter basename="/books">
         <Routers />
