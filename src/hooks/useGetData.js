@@ -1,18 +1,24 @@
-import baseUrl from '../Api/baseURL'
+import axiosRequest from "../Api/axiosRequest";
 
-const useGetData = async (url, parmas) => {
+/**
+ *
+ * @param {string} url
+ * @param {import('axios').AxiosRequestConfig} config
+ * @returns
+ */
+const useGetData = async (url, config) => {
+  const res = await axiosRequest.get(url, config);
+  return res.data;
+};
 
-    const res = await baseUrl.get(url, parmas);
-    return res.data;
-}
-
-
-const useGetDataToken = async (url, parmas) => {
-    const config = {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    }
-    const res = await baseUrl.get(url, config);
-    return res.data;
-}
+/**
+ *
+ * @param {string} url
+ * @returns
+ */
+const useGetDataToken = async (url) => {
+  const res = await axiosRequest.get(url);
+  return res.data;
+};
 
 export { useGetData, useGetDataToken };

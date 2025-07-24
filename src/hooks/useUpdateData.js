@@ -1,21 +1,33 @@
-import baseUrl from '../Api/baseURL'
+import baseUrl from "../Api/axiosRequest";
 
+/**
+ *
+ * @param {string} url
+ * @param {any} data
+ * @param {import('axios').AxiosRequestConfig} config
+ * @returns
+ */
+const useInUpdateDataWithImage = async (url, data, config = {}) => {
+  config.headers = {
+    "Content-Type": "multipart/form-data",
+    ...(config.headers || {}),
+  };
 
-const useInUpdateDataWithImage = async (url, parmas) => {
-    const config = {
-        headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${localStorage.getItem("token")}` }
-    }
-    const res = await baseUrl.put(url, parmas, config);
-    console.log(res.status)
-    return res;
-}
+  const res = await baseUrl.put(url, data, config);
+  console.log(res.status);
+  return res;
+};
 
-const useInsUpdateData = async (url, parmas) => {
-    const config = {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    }
-    const res = await baseUrl.put(url, parmas, config);
-    return res;
-}
+/**
+ *
+ * @param {string} url
+ * @param {any} data
+ * @param {import('axios').AxiosRequestConfig} config
+ * @returns
+ */
+const useInsUpdateData = async (url, data, config) => {
+  const res = await baseUrl.put(url, data, config);
+  return res;
+};
 
 export { useInUpdateDataWithImage, useInsUpdateData };

@@ -8,14 +8,14 @@ import { useDispatch } from "react-redux";
 import InitDataLoader from "./handlers/InitDataLoader";
 
 function App() {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-  const savedPath = localStorage.getItem("breadcrumbPath");
-  if (savedPath) {
-    dispatch(setBreadcrumbPath(JSON.parse(savedPath)));
-  }
-}, []);
+    const savedPath = localStorage.getItem("breadcrumbPath");
+    if (savedPath) {
+      dispatch(setBreadcrumbPath(JSON.parse(savedPath)));
+    }
+  }, []);
   return (
     <>
       <InitDataLoader />

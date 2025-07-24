@@ -2,8 +2,15 @@ import { useEffect } from "react";
 import { FaBook, FaDownload } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getSubjects, addBreadcrumbItem, resetBreadcrumbPath, getLevels, getSemesters, getStages } from "../store/categoriesSlice";
-import { baseURL } from "../Api/baseURL";
+import {
+  getSubjects,
+  addBreadcrumbItem,
+  resetBreadcrumbPath,
+  getLevels,
+  getSemesters,
+  getStages,
+} from "../store/categoriesSlice";
+import { baseURL } from "../Api/axiosRequest";
 import Breadcrumb from "../components/Breadcrumb";
 
 const useQuery = () => new URLSearchParams(useLocation().search);
@@ -14,68 +21,80 @@ const SubjectsPage = () => {
 
   const dispatch = useDispatch();
 
-  const { subjects, loading, error, semesters, levels, stages } = useSelector((state) => ({
-    subjects: state.category.subjects,
-    loading: state.category.loading.subjects,
-    error: state.category.error?.subjects || null,
-    semesters: state.category.semesters,
-    levels: state.category.levels,
-    stages: state.category.stages,
-  }));
+  const { subjects, loading, error, semesters, levels, stages } = useSelector(
+    (state) => ({
+      subjects: state.category.subjects,
+      loading: state.category.loading.subjects,
+      error: state.category.error?.subjects || null,
+      semesters: state.category.semesters,
+      levels: state.category.levels,
+      stages: state.category.stages,
+    })
+  );
 
- // تحميل المواد
-useEffect(() => {
-  if (semesterId) {
-    dispatch(getSubjects(semesterId));
-  }
-}, [dispatch, semesterId]);
+  // تحميل المواد
+  useEffect(() => {
+    if (semesterId) {
+      dispatch(getSubjects(semesterId));
+    }
+  }, [dispatch, semesterId]);
 
- useEffect(() => {
-  if (semesterId && semesters.length === 0) {
-    dispatch(getSemesters());  
-  }
-  if (levels.length === 0) {
-    dispatch(getLevels());  
-  }
-  if (stages.length === 0) {
-    dispatch(getStages());  
-  }
-}, [dispatch, semesterId, semesters.length, levels.length, stages.length]);
+  useEffect(() => {
+    if (semesterId && semesters.length === 0) {
+      dispatch(getSemesters());
+    }
+    if (levels.length === 0) {
+      dispatch(getLevels());
+    }
+    if (stages.length === 0) {
+      dispatch(getStages());
+    }
+  }, [dispatch, semesterId, semesters.length, levels.length, stages.length]);
 
-// بناء مسار التنقل Breadcrumb بعد توفر البيانات
-useEffect(() => {
-  if (semesterId && semesters.length && levels.length && stages.length) {
-    dispatch(resetBreadcrumbPath());
-    dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
+  // بناء مسار التنقل Breadcrumb بعد توفر البيانات
+  useEffect(() => {
+    if (semesterId && semesters.length && levels.length && stages.length) {
+      dispatch(resetBreadcrumbPath());
+      dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
 
-    const currentSemester = semesters.find((sem) => sem._id === semesterId);
-    if (currentSemester) {
-      const currentLevel = levels.find((lvl) => lvl._id === currentSemester.level);
-      if (currentLevel) {
-        const currentStage = stages.find((stg) => stg._id === currentLevel.stage);
-        if (currentStage) {
-          dispatch(addBreadcrumbItem({
-            title: currentStage.title,
-            path: `/LevelsPage?stageId=${currentStage._id}`,
-          }));
+      const currentSemester = semesters.find((sem) => sem._id === semesterId);
+      if (currentSemester) {
+        const currentLevel = levels.find(
+          (lvl) => lvl._id === currentSemester.level
+        );
+        if (currentLevel) {
+          const currentStage = stages.find(
+            (stg) => stg._id === currentLevel.stage
+          );
+          if (currentStage) {
+            dispatch(
+              addBreadcrumbItem({
+                title: currentStage.title,
+                path: `/LevelsPage?stageId=${currentStage._id}`,
+              })
+            );
+          }
+
+          dispatch(
+            addBreadcrumbItem({
+              title: currentLevel.title,
+              path: `/LevelsPage?stageId=${currentLevel._id}`,
+            })
+          );
         }
 
-        dispatch(addBreadcrumbItem({
-          title: currentLevel.title,
-          path: `/LevelsPage?stageId=${currentLevel._id}`,
-        }));
-      }
-
-      // ✅ تجاهل إضافة الفصل الدراسي الأول
-      if (currentSemester.title !== "الفصل الدراسي الأول") {
-        dispatch(addBreadcrumbItem({
-          title: currentSemester.title,
-          path: `/Subjects?semesterId=${semesterId}`,
-        }));
+        // ✅ تجاهل إضافة الفصل الدراسي الأول
+        if (currentSemester.title !== "الفصل الدراسي الأول") {
+          dispatch(
+            addBreadcrumbItem({
+              title: currentSemester.title,
+              path: `/Subjects?semesterId=${semesterId}`,
+            })
+          );
+        }
       }
     }
-  }
-}, [dispatch, semesterId, semesters, levels, stages]);
+  }, [dispatch, semesterId, semesters, levels, stages]);
 
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100">
@@ -99,7 +118,7 @@ useEffect(() => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-6xl">
           {subjects.map((subject, index) => (
             <Link
-            to={`/Units?subjectId=${subject._id}`}
+              to={`/Units?subjectId=${subject._id}`}
               key={subject._id || index}
               className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center text-center"
             >
@@ -129,7 +148,9 @@ useEffect(() => {
                   )
                 )
               ) : (
-                <p className="mt-4 text-red-600 font-medium">الكتاب غير متاح الآن</p>
+                <p className="mt-4 text-red-600 font-medium">
+                  الكتاب غير متاح الآن
+                </p>
               )}
             </Link>
           ))}

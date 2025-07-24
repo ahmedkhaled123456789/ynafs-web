@@ -2,7 +2,12 @@ import { useEffect } from "react";
 import { FaBookOpen } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getSubLevels, getSemesters, addBreadcrumbItem, resetBreadcrumbPath } from "../store/categoriesSlice";
+import {
+  getSubLevels,
+  getSemesters,
+  addBreadcrumbItem,
+  resetBreadcrumbPath,
+} from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
 
 const useQuery = () => {
@@ -16,52 +21,65 @@ const SubLevelsPage = () => {
   const navigate = useNavigate();
 
   // نجيب subLevels والloading والerror
-  const { subLevels, loading, error, levels, stages } = useSelector((state) => ({
-    subLevels: state.category.subLevels,
-    loading: state.category.loading.subLevels,
-    error: state.category.error?.subLevels || null,
-    levels: state.category.levels,
-    stages: state.category.stages,
-  }));
+  const { subLevels, loading, error, levels, stages } = useSelector(
+    (state) => ({
+      subLevels: state.category.subLevels,
+      loading: state.category.loading.subLevels,
+      error: state.category.error?.subLevels || null,
+      levels: state.category.levels,
+      stages: state.category.stages,
+    })
+  );
 
   // 1. Load data when levelId changes
-useEffect(() => {
-  if (levelId) {
-    dispatch(getSubLevels(levelId));
-  }
-}, [dispatch, levelId]);
-
-// 2. Build breadcrumb after levels and stages are available
-useEffect(() => {
-  if (levelId && levels.length > 0 && stages.length > 0) {
-    dispatch(resetBreadcrumbPath());
-    dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
- 
-    const currentLevel = levels.find((lvl) => lvl._id === levelId);
-    if (currentLevel) {
-      const currentStage = stages.find((stg) => stg._id === currentLevel.stage);
-      if (currentStage) {
-        dispatch(addBreadcrumbItem({
-          title: currentStage.title,
-          path: `/LevelsPage?stageId=${currentStage._id}`
-        }));
-      }
-
-      dispatch(addBreadcrumbItem({
-        title: currentLevel.title,
-        path: `/LevelsPage?levelId=${levelId}`
-      }));
+  useEffect(() => {
+    if (levelId) {
+      dispatch(getSubLevels(levelId));
     }
-  }
-}, [dispatch, levelId, levels, stages]);
+  }, [dispatch, levelId]);
+
+  // 2. Build breadcrumb after levels and stages are available
+  useEffect(() => {
+    if (levelId && levels.length > 0 && stages.length > 0) {
+      dispatch(resetBreadcrumbPath());
+      dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
+
+      const currentLevel = levels.find((lvl) => lvl._id === levelId);
+      if (currentLevel) {
+        const currentStage = stages.find(
+          (stg) => stg._id === currentLevel.stage
+        );
+        if (currentStage) {
+          dispatch(
+            addBreadcrumbItem({
+              title: currentStage.title,
+              path: `/LevelsPage?stageId=${currentStage._id}`,
+            })
+          );
+        }
+
+        dispatch(
+          addBreadcrumbItem({
+            title: currentLevel.title,
+            path: `/LevelsPage?levelId=${levelId}`,
+          })
+        );
+      }
+    }
+  }, [dispatch, levelId, levels, stages]);
 
   const handleLevelClick = async (subLevelId) => {
-     const clickedSubLevel = subLevels.find((sl) => sl._id === subLevelId);
+    const clickedSubLevel = subLevels.find((sl) => sl._id === subLevelId);
     if (clickedSubLevel) {
-      dispatch(addBreadcrumbItem({ title: clickedSubLevel.title, path: `/Semesters?subLevelId=${subLevelId}` }));
+      dispatch(
+        addBreadcrumbItem({
+          title: clickedSubLevel.title,
+          path: `/Semesters?subLevelId=${subLevelId}`,
+        })
+      );
     }
 
-     const resultAction = await dispatch(getSemesters(subLevelId));
+    const resultAction = await dispatch(getSemesters(subLevelId));
     const data = resultAction.payload;
 
     if (Array.isArray(data) && data.length === 1) {
@@ -98,7 +116,9 @@ useEffect(() => {
               <div className="mb-4">
                 <FaBookOpen size={80} />
               </div>
-              <div className="text-xl font-semibold text-center">{level.title}</div>
+              <div className="text-xl font-semibold text-center">
+                {level.title}
+              </div>
             </div>
           ))}
         </div>

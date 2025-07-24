@@ -1,13 +1,14 @@
-import baseUrl from '../Api/baseURL'
+import axiosRequest from "../Api/axiosRequest";
 
-const useDeleteData = async (url, parmas) => {
-
-
-    const config = {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    }
-    const res = await baseUrl.delete(url, config, parmas);
-    return res.data;
-}
+/**
+ *
+ * @param {string} url
+ * @param {import('axios').AxiosRequestConfig} config
+ * @returns
+ */
+const useDeleteData = async (url, config) => {
+  const res = await axiosRequest.delete(url, config);
+  return res.data;
+};
 
 export default useDeleteData;

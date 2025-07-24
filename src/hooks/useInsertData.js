@@ -1,26 +1,30 @@
-import baseUrl from '../Api/baseURL'
+import axiosRequest from "../Api/axiosRequest";
 
+/**
+ *
+ * @param {string} url
+ * @param {import('axios').AxiosRequestConfig} config
+ * @returns
+ */
+const useInsertDataWithImage = async (url, config = {}) => {
+  config.headers = {
+    "Content-Type": "multipart/form-data",
+    ...(config.headers || {}),
+  };
 
-const useInsertDataWithImage = async (url, parmas) => {
-    const config = {
-        headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-    }
-    const res = await baseUrl.post(url, parmas, config);
-    return res;
-}
- 
-const useInsertData = async (url, parmas) => {
-    const config = {
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-        }
-    }
-    const res = await baseUrl.post(url, parmas, config);
- 
-    return res;
-}
+  const res = await axiosRequest.post(url, config, config);
+  return res;
+};
+
+/**
+ *
+ * @param {string} url
+ * @param {import('axios').AxiosRequestConfig} config
+ * @returns
+ */
+const useInsertData = async (url, config) => {
+  const res = await axiosRequest.post(url, config);
+  return res;
+};
 
 export { useInsertData, useInsertDataWithImage };

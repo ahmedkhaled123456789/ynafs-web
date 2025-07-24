@@ -2,7 +2,13 @@ import React, { useEffect } from "react";
 import { FaBookOpen } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getLevels, getSemesters, addBreadcrumbItem, resetBreadcrumbPath, getStages } from "../store/categoriesSlice";
+import {
+  getLevels,
+  getSemesters,
+  addBreadcrumbItem,
+  resetBreadcrumbPath,
+  getStages,
+} from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
 
 const useQuery = () => {
@@ -14,29 +20,41 @@ const LevelsPage = () => {
   const stageId = query.get("stageId");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { levels, loading, error, stages } = useSelector((state) => state.category);
+  const { levels, loading, error, stages } = useSelector(
+    (state) => state.category
+  );
 
- useEffect(() => {
-  if (stageId) {
-    dispatch(getLevels(stageId));
-    dispatch(getStages(stageId)); 
-  }
-}, [dispatch, stageId]);
-
- useEffect(() => {
-  if (stageId && stages.length > 0) {
-    dispatch(resetBreadcrumbPath());
-    dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
- 
-    const currentStage = stages.find((s) => s._id === stageId);
-    if (currentStage) {
-      dispatch(addBreadcrumbItem({ title: currentStage.title, path: `/LevelsPage?stageId=${stageId}` }));
+  useEffect(() => {
+    if (stageId) {
+      dispatch(getLevels(stageId));
+      dispatch(getStages(stageId));
     }
-  }
-}, [dispatch, stageId, stages]);
+  }, [dispatch, stageId]);
+
+  useEffect(() => {
+    if (stageId && stages.length > 0) {
+      dispatch(resetBreadcrumbPath());
+      dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
+
+      const currentStage = stages.find((s) => s._id === stageId);
+      if (currentStage) {
+        dispatch(
+          addBreadcrumbItem({
+            title: currentStage.title,
+            path: `/LevelsPage?stageId=${stageId}`,
+          })
+        );
+      }
+    }
+  }, [dispatch, stageId, stages]);
 
   const handleLevelClick = async (level) => {
-    dispatch(addBreadcrumbItem({ title: level.title, path: `/subLevels?levelId=${level._id}` }));
+    dispatch(
+      addBreadcrumbItem({
+        title: level.title,
+        path: `/subLevels?levelId=${level._id}`,
+      })
+    );
 
     if (level.subLevels && level.subLevels.length > 0) {
       navigate(`/subLevels?levelId=${level._id}`);
@@ -44,7 +62,12 @@ const LevelsPage = () => {
       const resultAction = await dispatch(getSemesters(level._id));
       const data = resultAction.payload;
       if (Array.isArray(data) && data.length === 1) {
-        dispatch(addBreadcrumbItem({ title: data[0].title || "الفصل الدراسي", path: `/Subjects?semesterId=${data[0]._id}` }));
+        dispatch(
+          addBreadcrumbItem({
+            title: data[0].title || "الفصل الدراسي",
+            path: `/Subjects?semesterId=${data[0]._id}`,
+          })
+        );
         navigate(`/Subjects?semesterId=${data[0]._id}`);
       }
     }
@@ -60,13 +83,13 @@ const LevelsPage = () => {
 
         {/* حالة التحميل */}
         {loading.levels && (
-          <div className="text-gray-600 text-lg py-8">جاري تحميل الصفوف الدراسية...</div>
+          <div className="text-gray-600 text-lg py-8">
+            جاري تحميل الصفوف الدراسية...
+          </div>
         )}
 
         {/* عرض الأخطاء */}
-        {error.levels && (
-          <p className="text-red-500 text-lg">{error.levels}</p>
-        )}
+        {error.levels && <p className="text-red-500 text-lg">{error.levels}</p>}
 
         {/* عرض البيانات عند انتهاء التحميل */}
         {!loading.levels && levels.length > 0 && (
@@ -77,8 +100,12 @@ const LevelsPage = () => {
                 onClick={() => handleLevelClick(level)}
                 className="cursor-pointer bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:bg-[#0093e9] hover:text-white transition"
               >
-                <div className="mb-4"><FaBookOpen size={80} /></div>
-                <div className="text-xl font-semibold text-center">{level.title}</div>
+                <div className="mb-4">
+                  <FaBookOpen size={80} />
+                </div>
+                <div className="text-xl font-semibold text-center">
+                  {level.title}
+                </div>
               </div>
             ))}
           </div>

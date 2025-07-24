@@ -9,7 +9,7 @@ const Breadcrumb = () => {
       <ol className="flex overflow-hidden rounded-lg border border-gray-200 text-gray-600 bg-white shadow">
         {breadcrumbPath.map((item, index) => {
           const isLast = index === breadcrumbPath.length - 1;
-           let title = item.title;
+          let title = item.title;
           if (title === "الفصل الدراسي الأول") {
             return;
           }

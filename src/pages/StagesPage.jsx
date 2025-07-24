@@ -1,8 +1,11 @@
-import { useEffect } from "react"; 
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FaSchool, FaUserGraduate, FaUniversity } from "react-icons/fa";
-import {  addBreadcrumbItem, resetBreadcrumbPath } from "../store/categoriesSlice";
+import {
+  addBreadcrumbItem,
+  resetBreadcrumbPath,
+} from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
 
 const StagesPage = () => {
@@ -11,12 +14,11 @@ const StagesPage = () => {
   const { stages, loading, error } = useSelector((state) => state.category);
 
   useEffect(() => {
-  // dispatch(getCategories());
-  dispatch(resetBreadcrumbPath());
+    // dispatch(getCategories());
+    dispatch(resetBreadcrumbPath());
 
-  dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
- }, [dispatch]);
-
+    dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
+  }, [dispatch]);
 
   // useEffect(() => {
   //   const catId = categories?.[0]?._id;
@@ -26,13 +28,13 @@ const StagesPage = () => {
   // }, [dispatch, categories]);
 
   const handleStageClick = (stage) => {
-     dispatch(
+    dispatch(
       addBreadcrumbItem({
         title: stage.title,
         path: `/LevelsPage?stageId=${stage._id}`,
       })
     );
-     navigate(`/LevelsPage?stageId=${stage._id}`);
+    navigate(`/LevelsPage?stageId=${stage._id}`);
   };
 
   return (
@@ -45,13 +47,13 @@ const StagesPage = () => {
 
         {/* Loading indicator */}
         {loading.stages && (
-          <p className="text-gray-500 text-lg">جاري تحميل المراحل الدراسية...</p>
+          <p className="text-gray-500 text-lg">
+            جاري تحميل المراحل الدراسية...
+          </p>
         )}
 
         {/* Error display */}
-        {error.stages && (
-          <p className="text-red-500">{error.stages}</p>
-        )}
+        {error.stages && <p className="text-red-500">{error.stages}</p>}
 
         {/* Show stages only when loaded */}
         {!loading.stages && stages.length > 0 && (
@@ -71,7 +73,9 @@ const StagesPage = () => {
                     <FaUniversity size={100} />
                   )}
                 </div>
-                <div className="text-2xl font-semibold text-center">{stage.title}</div>
+                <div className="text-2xl font-semibold text-center">
+                  {stage.title}
+                </div>
               </button>
             ))}
           </div>
