@@ -14,6 +14,7 @@ import {
 import Breadcrumb from "../components/Breadcrumb"; // ✅
 import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
+import { baseURL } from "../Api/axiosRequest";
 const useQuery = () => new URLSearchParams(useLocation().search);
 
 const UnitsPage = () => {
@@ -142,6 +143,28 @@ const UnitsPage = () => {
                 <div className="text-lg font-semibold !text-right w-full flex items-center justify-between">
                   <div>{unit.title}</div>
                   <div className="flex gap-2 items-center">
+                    {unit.subjectBooks &&
+                      unit.subjectBooks.length > 0 &&
+                      unit.subjectBooks.map((book) =>
+                        book.title.includes("غلاف ") ? null : (
+                          <a
+                            key={book.path}
+                            href={
+                              book?.path?.startsWith("http")
+                                ? book.path
+                                : (import.meta.env.DEV ? baseURL : "") +
+                                  book.path
+                            }
+                            download={book?.title + ".pdf"}
+                            className="mt-2 inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition"
+                          >
+                            <FaDownload />
+                            <span className="text-sm">
+                              {book.title.split("/")[1]?.trim() || book.title}
+                            </span>
+                          </a>
+                        )
+                      )}
                     {unit.isNew && (
                       <span className="bg-emerald-500 text-white text-sm font-semibold px-5 text-center py-0.5 rounded-full">
                         جديد
@@ -165,6 +188,28 @@ const UnitsPage = () => {
                           جديد
                         </span>
                       )}
+                      {chapter.subjectBooks &&
+                        chapter.subjectBooks.length > 0 &&
+                        chapter.subjectBooks.map((book) =>
+                          book.title.includes("غلاف ") ? null : (
+                            <a
+                              key={book.path}
+                              href={
+                                book?.path?.startsWith("http")
+                                  ? book.path
+                                  : (import.meta.env.DEV ? baseURL : "") +
+                                    book.path
+                              }
+                              download={book?.title + ".pdf"}
+                              className="mt-2 inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition"
+                            >
+                              <FaDownload />
+                              <span className="text-sm">
+                                {book.title.split("/")[1]?.trim() || book.title}
+                              </span>
+                            </a>
+                          )
+                        )}
                     </div>
                   );
                 })
