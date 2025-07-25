@@ -18,9 +18,7 @@ const LevelsPage = () => {
   const query = useQuery();
   const stageId = query.get("stageId");
   const dispatch = useDispatch();
-  const { levels, loading, error } = useSelector(
-    (state) => state.category
-  );
+  const { levels, loading, error } = useSelector((state) => state.category);
   const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
 
   useEffect(() => {
@@ -36,7 +34,7 @@ const LevelsPage = () => {
     const breadcrumb = [
       {
         label: level.title,
-        to: `${location.pathname}${location.search || ""}`,
+        to: `/LevelsPage${location.search || ""}`,
         id: level._id,
       },
     ];

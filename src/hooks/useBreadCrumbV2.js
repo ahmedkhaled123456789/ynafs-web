@@ -26,7 +26,9 @@ export const useBreadCrumbV2 = () => {
     const fullPath = base.replace(/\/$/, "") + to;
     const newPath = [
       ...path,
-      ...(Array.isArray(breadcrumb) ? breadcrumb : [breadcrumb]),
+      ...(Array.isArray(breadcrumb)
+        ? breadcrumb.map((e) => ({ ...e, to: e.to || to }))
+        : [{ ...breadcrumb, to: breadcrumb.to || to }]),
     ];
 
     setPath(newPath);

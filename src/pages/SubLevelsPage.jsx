@@ -39,7 +39,7 @@ const SubLevelsPage = () => {
   const handleLevelClick = async (subLevel) => {
     const breadcrumb = {
       label: subLevel.title,
-      to: `${location.pathname}${location.search || ""}`,
+      to: `/subLevels${location.search || ""}`,
       id: subLevel._id,
     };
 

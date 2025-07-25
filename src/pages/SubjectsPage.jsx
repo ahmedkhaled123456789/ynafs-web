@@ -53,7 +53,7 @@ const SubjectsPage = () => {
   const handleSubjectClick = async (subject) => {
     const breadcrumb = {
       label: subject.title,
-      to: `${location.pathname}${location.search || ""}`,
+      to: `/Subjects${location.search || ""}`,
       id: subject._id,
     };
 
