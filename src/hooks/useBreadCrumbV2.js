@@ -121,14 +121,18 @@ export const getDataAndHandleBreadCrumb = async ({ getPath, url }) => {
 
     const path = [];
     if (stage?.title) {
-      path.push({ label: stage.title, _id: stage._id, to: "/" });
+      path.push({
+        label: stage.title,
+        _id: stage._id,
+        to: `/LevelsPage?stageId=${stage._id}`,
+      });
     }
 
     if (level?.title) {
       path.push({
         label: level.title,
         _id: level._id,
-        to: `/LevelsPage?stageId=${stage._id}`,
+        to: `/Subjects?semesterId=${level._id}`,
       });
     }
 
@@ -136,7 +140,7 @@ export const getDataAndHandleBreadCrumb = async ({ getPath, url }) => {
       path.push({
         label: subLevelParent.title,
         _id: subLevelParent._id,
-        to: `/subLevels?levelId=${level._id}`,
+        to: `/subLevels?levelId=${subLevelParent._id}`,
       });
     }
 
@@ -144,7 +148,7 @@ export const getDataAndHandleBreadCrumb = async ({ getPath, url }) => {
       path.push({
         label: subject.title,
         _id: subject._id,
-        to: `/Subjects?semesterId=${semester._id}`,
+        to: `/Units?subjectId=${semester._id}`,
       });
     }
 
