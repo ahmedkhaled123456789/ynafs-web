@@ -3,7 +3,6 @@ import { assignChaptersToUnits, filterCurrentYearBooks } from "../handlers";
 import axiosRequest from "../Api/axiosRequest";
 import {
   getDataAndHandleBreadCrumb,
-  // handlePushAndResetBreadCrumbState,
 } from "../hooks/useBreadCrumbV2";
 
 export const getCategories = createAsyncThunk(

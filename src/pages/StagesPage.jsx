@@ -19,17 +19,6 @@ const StagesPage = () => {
   const { path: breadCrumbPath } = useBreadCrumbV2();
 
   useEffect(() => {
-    // const state = window.history.state;
-
-    // if (state?.breadcrumbPath) {
-    //   setPath(state.breadcrumbPath);
-    // } else {
-    //   handlePushAndResetBreadCrumbState({
-    //     reset: true,
-    //     path: [],
-    //   });
-    // }
-
     // dispatch(getCategories());
     dispatch(resetBreadcrumbPath());
 

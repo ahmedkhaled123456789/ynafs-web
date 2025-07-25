@@ -14,8 +14,8 @@ import { useNavigate } from "react-router-dom";
 /**
  *
  * @returns {{
- *    path: mainParams['path'];
- *    push: mainParams['push'];
+ *    path: BreadcrumbItem[];
+ *    push: () => void;
  *    setPath: resetParams['setPath'];
  *    clear: () => void;
  *}}
@@ -33,64 +33,11 @@ export const useBreadCrumbV2 = () => {
  */
 
 /**
- * @typedef {Object} mainParams
- * @property {string} name
- * @property {string} urlPath
- * @property {string} to
- * @property {string} id
- * @property {() => void} push
- * @property {BreadcrumbItem[]} path
- */
-
-/**
  * @typedef {Object} resetParams
  * @property {boolean} reset
  * @property {(path: BreadcrumbItem[]) => void} [setPath]
  * @property {BreadcrumbItem[]} path
  */
-
-/**
- *
- * @param {mainParams & Partial<resetParams> | resetParams & Partial<mainParams>} param1
- */
-export const handlePushAndResetBreadCrumbState = ({
-  name,
-  urlPath,
-  to,
-  id,
-  reset,
-  push,
-  path,
-  setPath,
-}) => {
-  if (reset) {
-    if (!setPath) {
-      setPath = useBreadcrumbStore.getState().setPath;
-    }
-
-    setPath(path);
-    window.history.replaceState({ breadcrumbTrail: path }, "");
-    return;
-  }
-
-  if (!push) {
-    push = useBreadcrumbStore.getState().push;
-  }
-
-  const breadcrumb = { label: name, to, id };
-
-  push(breadcrumb); // push to Zustand store
-
-  // Replace the history state after navigation
-  setTimeout(() => {
-    // Push to browser history
-    window.history.pushState(
-      { breadcrumbPath: [...path, breadcrumb] },
-      "",
-      urlPath
-    );
-  }, 0);
-};
 
 /**
  *
@@ -166,7 +113,7 @@ export function useBreadcrumbNavigate() {
   /**
    *
    * @param {string} to
-   * @param {{ label: string; _id?: string; to?: string; }} breadcrumb
+   * @param {BreadcrumbItem} breadcrumb
    */
   function navigateAndPushState(to, breadcrumb) {
     const base = import.meta.env.BASE_URL || "/";

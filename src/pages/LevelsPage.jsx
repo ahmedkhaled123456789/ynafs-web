@@ -12,7 +12,6 @@ import {
 import Breadcrumb from "../components/Breadcrumb";
 import {
   useBreadcrumbNavigate,
-  // handlePushAndResetBreadCrumbState,
   useBreadCrumbV2,
 } from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
@@ -64,14 +63,6 @@ const LevelsPage = () => {
         path: `/subLevels?levelId=${level._id}`,
       })
     );
-
-    // handlePushAndResetBreadCrumbState({
-    //   id: level._id,
-    //   name: level.title,
-    //   to: `${location.pathname}${location.search || ""}`,
-    //   urlPath: `${location.pathname}${location.search || ""}`,
-    //   path: breadCrumbPath,
-    // });
 
     const breadcrumb = {
       label: level.title,
