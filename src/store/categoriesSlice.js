@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { assignChaptersToUnits, filterCurrentYearBooks } from "../handlers";
 import axiosRequest from "../Api/axiosRequest";
-import {
-  getDataAndHandleBreadCrumb,
-} from "../hooks/useBreadCrumbV2";
+import { getDataAndHandleBreadCrumb } from "../hooks/useBreadCrumbV2";
 
 export const getCategories = createAsyncThunk(
   "categories/getCategories",
@@ -106,12 +104,17 @@ export const getUnits = createAsyncThunk(
 
 export const getLessons = createAsyncThunk(
   "lessons/getLessons",
-  async (id, thunkAPI) => {
+  async ({ parentId, getPath }, thunkAPI) => {
     try {
-      const res = await axiosRequest.get(`/api/books/lessons?parent=${id}`);
+      const res = await getDataAndHandleBreadCrumb({
+        getPath,
+        url: `/api/books/lessons?parent=${parentId}`,
+      });
       return res.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.error?.message || error.message
+      );
     }
   }
 );

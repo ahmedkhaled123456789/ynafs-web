@@ -20,10 +20,22 @@ const UnitsPage = () => {
 
   const dispatch = useDispatch();
   // const navigate = useNavigate();
-  const { path: breadCrumbPath } = useBreadCrumbV2();
+  const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
 
   const { levels, units, stages, subjects, semesters, loading, error } =
     useSelector((state) => state.category);
+
+  const handleUnitClick = async (unit) => {
+    console.log(unit);
+    if (unit.chapters?.length) return;
+    const breadcrumb = {
+      label: unit.title,
+      to: `/Units${location.search || ""}`,
+      id: unit._id,
+    };
+
+    navigateAndPushState(`/Lessons?parentId=${unit._id}`, breadcrumb);
+  };
   // تحميل الوحدات
   useEffect(() => {
     if (subjectId) {
@@ -62,7 +74,7 @@ const UnitsPage = () => {
 
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100 ">
-      <BreadcrumbV2 data={breadCrumbPath} />
+      <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="الدروس" />
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">الوحدات الدراسية</h1>
 
@@ -71,9 +83,10 @@ const UnitsPage = () => {
 
         <div className="flex flex-col gap-3 w-full max-w-6xl">
           {units.map((unit, index) => (
-            <div key={unit._id || index}>
+            <div key={unit._id || index} className="cursor-pointer">
               <div
                 className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:bg-[#0093e9] hover:text-white transition gap-3"
+                onClick={() => handleUnitClick(unit)}
                 // className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:bg-[#0093e9] hover:text-white transition"
               >
                 <div className="text-lg font-semibold !text-right w-full flex items-center justify-between flex-wrap">
@@ -117,6 +130,7 @@ const UnitsPage = () => {
                     <div
                       key={chapter._id || index}
                       className="bg-gray-200 cursor-pointer shadow-md p-2 hover:bg-[#0093e9] hover:text-white transition text-right w-full flex items-center justify-between flex-wrap"
+                      onClick={() => handleUnitClick(chapter)}
                     >
                       <div>{chapter.title}</div>
                       {chapter.isNew && (
