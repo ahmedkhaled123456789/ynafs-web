@@ -9,9 +9,7 @@ import {
   getStages,
 } from "../store/categoriesSlice";
 import { baseURL } from "../Api/axiosRequest";
-import {
-  useBreadCrumbV2,
-} from "../hooks/useBreadCrumbV2";
+import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const useQuery = () => new URLSearchParams(useLocation().search);
@@ -67,6 +65,9 @@ const SubjectsPage = () => {
 
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">المواد الدراسية</h1>
+        <h2 className="mb-4 text-xl underline text-rose-500 font-extrabold">
+          لمعرفة الوحدات والاختلاف في المنهج .. اضغط على اسم المادة
+        </h2>
 
         {loading.subjects && (
           <div className="text-blue-600 font-medium animate-pulse text-lg mb-6">
