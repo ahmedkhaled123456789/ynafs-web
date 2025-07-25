@@ -22,6 +22,21 @@ import { useNavigate } from "react-router-dom";
  */
 export const useBreadCrumbV2 = () => {
   const { path, clear, setPath, push } = useBreadcrumbStore();
+
+  useEffect(() => {
+    const state = window.history.state;
+
+    // handle update store state
+    if (state?.breadcrumbPath) {
+      setPath(state.breadcrumbPath);
+    } else {
+      resetBreadCrumbState({
+        path: [],
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return { path, push, setPath, clear };
 };
 
@@ -113,12 +128,15 @@ export function useBreadcrumbNavigate() {
   /**
    *
    * @param {string} to
-   * @param {BreadcrumbItem} breadcrumb
+   * @param {BreadcrumbItem | BreadcrumbItem[]} breadcrumb
    */
   function navigateAndPushState(to, breadcrumb) {
     const base = import.meta.env.BASE_URL || "/";
     const fullPath = base.replace(/\/$/, "") + to;
-    const newPath = [...path, breadcrumb];
+    const newPath = [
+      ...path,
+      ...(Array.isArray(breadcrumb) ? breadcrumb : [breadcrumb]),
+    ];
     console.log({ base, fullPath });
     setPath(newPath);
     navigate(to);
@@ -128,16 +146,6 @@ export function useBreadcrumbNavigate() {
   }
 
   useEffect(() => {
-    const state = window.history.state;
-
-    if (state?.breadcrumbPath) {
-      setPath(state.breadcrumbPath);
-    } else {
-      resetBreadCrumbState({
-        path: [],
-      });
-    }
-
     /**
      *
      * @param {PopStateEvent} event

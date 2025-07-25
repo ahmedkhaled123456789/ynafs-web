@@ -31,6 +31,7 @@ const UnitsPage = () => {
   useEffect(() => {
     if (subjectId) {
       const state = window.history.state;
+      console.log({ state });
       dispatch(
         getUnits({ subjectId, getPath: !state?.breadcrumbPath?.length })
       );

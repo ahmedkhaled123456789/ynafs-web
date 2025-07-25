@@ -36,6 +36,7 @@ const SubjectsPage = () => {
   useEffect(() => {
     if (semesterId) {
       const state = window.history.state;
+      console.log({ state });
       dispatch(
         getSubjects({ semesterId, getPath: !state?.breadcrumbPath?.length })
       );

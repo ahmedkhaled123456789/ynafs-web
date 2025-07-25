@@ -35,6 +35,7 @@ const SubLevelsPage = () => {
   useEffect(() => {
     if (levelId) {
       const state = window.history.state;
+      console.log({ state });
       dispatch(
         getSubLevels({ levelId, getPath: !state?.breadcrumbPath?.length })
       );
