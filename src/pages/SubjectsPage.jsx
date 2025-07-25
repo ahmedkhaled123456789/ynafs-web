@@ -65,9 +65,16 @@ const SubjectsPage = () => {
 
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">المواد الدراسية</h1>
-        <h2 className="mb-4 text-xl underline text-rose-500 font-extrabold">
+        <h2 className="mb-4 text-xl underline text-center text-rose-500 font-extrabold">
           لمعرفة الوحدات والاختلاف في المنهج .. اضغط على اسم المادة
         </h2>
+        <p className="mb-4 text-xl text-center text-rose-500 font-extrabold">
+          قد يوجد بعض الكتب طبعة 1446 - 2024 - ولكن تم اعادة توزيع المنهج وإضافة
+          بعض الوحدات من الفصل الدراسي الثاني ، لذلك يرجى النظر إلى الوحدات
+        </p>
+        <p className="mb-4 text-xl text-center text-emerald-500 font-extrabold">
+          يتم التحديث باستمرار اخر تحديث بتاريخ: 27-01-1447 هـ
+        </p>
 
         {loading.subjects && (
           <div className="text-blue-600 font-medium animate-pulse text-lg mb-6">
