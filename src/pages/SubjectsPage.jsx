@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { FaBook, FaDownload } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getSubjects,
@@ -12,6 +12,8 @@ import {
 } from "../store/categoriesSlice";
 import { baseURL } from "../Api/axiosRequest";
 import Breadcrumb from "../components/Breadcrumb";
+import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
+import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const useQuery = () => new URLSearchParams(useLocation().search);
 
@@ -20,6 +22,8 @@ const SubjectsPage = () => {
   const semesterId = query.get("semesterId");
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { path: breadCrumbPath } = useBreadCrumbV2();
 
   const { subjects, loading, error, semesters, levels, stages } = useSelector(
     (state) => state.category
@@ -28,7 +32,10 @@ const SubjectsPage = () => {
   // تحميل المواد
   useEffect(() => {
     if (semesterId) {
-      dispatch(getSubjects(semesterId));
+      const state = window.history.state;
+      dispatch(
+        getSubjects({ semesterId, getPath: !state?.breadCrumbPath?.length })
+      );
     }
   }, [dispatch, semesterId]);
 
@@ -89,10 +96,26 @@ const SubjectsPage = () => {
     }
   }, [dispatch, semesterId, semesters, levels, stages]);
 
+  const handleSubjectClick = async (subject) => {
+    const state = {
+      breadcrumbPath: [
+        ...breadCrumbPath,
+        {
+          label: subject.title,
+          to: `${location.pathname}${location.search || ""}`,
+          id: subject._id,
+        },
+      ],
+    };
+
+    navigate(`/Units?subjectId=${subject._id}`, { state });
+  };
+
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100">
       {/* Breadcrumb */}
-      <Breadcrumb />
+      {/* <Breadcrumb /> */}
+      <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="الوحدات الدراسية" />
 
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">المواد الدراسية</h1>
@@ -115,15 +138,12 @@ const SubjectsPage = () => {
             <div
               key={subject._id || index}
               className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center text-center"
+              onClick={() => handleSubjectClick(subject)}
             >
               <div className="mb-4 text-blue-600">
                 <FaBook size={70} />
               </div>
-              <Link to={`/Units?subjectId=${subject._id}`}>
-                <div className="text-lg font-semibold mb-4">
-                  {subject.title}
-                </div>
-              </Link>
+              <div className="text-lg font-semibold mb-4">{subject.title}</div>
 
               {subject.books && subject.books.length > 0 ? (
                 subject.books.map((book) =>

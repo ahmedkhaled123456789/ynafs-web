@@ -3,9 +3,9 @@ import { useDispatch } from "react-redux";
 import {
   getCategories,
   getStages,
-  getLevels,
-  getSubLevels,
-  getSemesters,
+  // getLevels,
+  // getSubLevels,
+  // getSemesters,
 } from "../store/categoriesSlice.js";
 
 const InitDataLoader = () => {
@@ -24,17 +24,19 @@ const InitDataLoader = () => {
           const stagesRes = await dispatch(getStages(categoryId));
           if (!getStages.fulfilled.match(stagesRes)) return;
 
-          const stageId = stagesRes.payload?.[0]?._id;
-          if (!stageId) return;
+          // ! next code break the app on first init
+          // console.log({ stagesRes });
+          // const stageId = stagesRes.payload?.[0]?._id;
+          // if (!stageId) return;
 
-          const levelsRes = await dispatch(getLevels(stageId));
-          if (!getLevels.fulfilled.match(levelsRes)) return;
+          // const levelsRes = await dispatch(getLevels(stageId));
+          // if (!getLevels.fulfilled.match(levelsRes)) return;
 
-          const levelId = levelsRes.payload?.[0]?._id;
-          if (!levelId) return;
+          // const levelId = levelsRes.payload?.[0]?._id;
+          // if (!levelId) return;
 
-          await dispatch(getSubLevels(levelId));
-          await dispatch(getSemesters(levelId));
+          // await dispatch(getSubLevels(levelId));
+          // await dispatch(getSemesters(levelId));
         }
       } catch (error) {
         console.error("خطأ في التحميل:", error);
@@ -46,6 +48,5 @@ const InitDataLoader = () => {
 
   return null;
 };
-
 
 export default InitDataLoader;

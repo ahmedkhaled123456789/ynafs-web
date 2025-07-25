@@ -9,6 +9,8 @@ import {
   resetBreadcrumbPath,
 } from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
+import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
+import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -19,6 +21,7 @@ const SubLevelsPage = () => {
   const levelId = query.get("levelId");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { path: breadCrumbPath } = useBreadCrumbV2();
 
   // نجيب subLevels والloading والerror
   const { subLevels, loading, error, levels, stages } = useSelector(
@@ -28,7 +31,10 @@ const SubLevelsPage = () => {
   // 1. Load data when levelId changes
   useEffect(() => {
     if (levelId) {
-      dispatch(getSubLevels(levelId));
+      const state = window.history.state;
+      dispatch(
+        getSubLevels({ levelId, getPath: !state?.breadCrumbPath?.length })
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelId]);
@@ -64,31 +70,42 @@ const SubLevelsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelId]);
 
-  const handleLevelClick = async (subLevelId) => {
-    const clickedSubLevel = subLevels.find((sl) => sl._id === subLevelId);
-    if (clickedSubLevel) {
+  const handleLevelClick = async (subLevel) => {
+    const state = {
+      breadcrumbPath: [
+        ...breadCrumbPath,
+        {
+          label: subLevel.title,
+          to: `${location.pathname}${location.search || ""}`,
+          id: subLevel._id,
+        },
+      ],
+    };
+
+    if (subLevel) {
       dispatch(
         addBreadcrumbItem({
-          title: clickedSubLevel.title,
-          path: `/Semesters?subLevelId=${subLevelId}`,
+          title: subLevel.title,
+          path: `/Semesters?subLevelId=${subLevel._id}`,
         })
       );
     }
 
-    const resultAction = await dispatch(getSemesters(subLevelId));
+    const resultAction = await dispatch(getSemesters(subLevel._id));
     const data = resultAction.payload;
 
     if (Array.isArray(data) && data.length === 1) {
-      navigate(`/Subjects?semesterId=${data[0]._id}`);
+      navigate(`/Subjects?semesterId=${data[0]._id}`, state);
     } else if (Array.isArray(data) && data.length > 1) {
-      navigate(`/Semesters?subLevelId=${subLevelId}`);
+      navigate(`/Semesters?subLevelId=${subLevel._id}`, state);
     }
   };
 
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100">
       {/* Breadcrumb */}
-      <Breadcrumb />
+      {/* <Breadcrumb /> */}
+      <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="المواد الدراسية" />
 
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">الصفوف الفرعية</h1>
@@ -106,7 +123,7 @@ const SubLevelsPage = () => {
           {subLevels.map((level) => (
             <div
               key={level._id}
-              onClick={() => handleLevelClick(level._id)}
+              onClick={() => handleLevelClick(level)}
               className="cursor-pointer bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:bg-[#0093e9] hover:text-white transition"
             >
               <div className="mb-4">

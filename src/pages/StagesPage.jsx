@@ -7,13 +7,27 @@ import {
   resetBreadcrumbPath,
 } from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
+import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
+import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const StagesPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { stages, loading, error } = useSelector((state) => state.category);
+  const { path: breadCrumbPath } = useBreadCrumbV2();
 
   useEffect(() => {
+    // const state = window.history.state;
+
+    // if (state?.breadcrumbPath) {
+    //   setPath(state.breadcrumbPath);
+    // } else {
+    //   handlePushAndResetBreadCrumbState({
+    //     reset: true,
+    //     path: [],
+    //   });
+    // }
+
     // dispatch(getCategories());
     dispatch(resetBreadcrumbPath());
 
@@ -34,13 +48,22 @@ const StagesPage = () => {
         path: `/LevelsPage?stageId=${stage._id}`,
       })
     );
-    navigate(`/LevelsPage?stageId=${stage._id}`);
+
+    navigate(`/LevelsPage?stageId=${stage._id}`, {
+      state: {
+        breadcrumbPath: [
+          ...breadCrumbPath,
+          { label: stage.title, to: "/", id: stage._id },
+        ],
+      },
+    });
   };
 
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100 flex flex-col">
       {/* Breadcrumb */}
-      <Breadcrumb />
+      {/* <Breadcrumb /> */}
+      <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="الصفوف الدراسية" />
 
       <div className="flex flex-col items-center p-12">
         <h2 className="text-3xl font-bold mb-8">المراحل الدراسية</h2>

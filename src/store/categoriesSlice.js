@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { filterCurrentYearBooks } from "../handlers";
 import axiosRequest from "../Api/axiosRequest";
+import {
+  getDataAndHandleBreadCrumb,
+  // handlePushAndResetBreadCrumbState,
+} from "../hooks/useBreadCrumbV2";
 
 export const getCategories = createAsyncThunk(
   "categories/getCategories",
@@ -28,9 +32,13 @@ export const getStages = createAsyncThunk(
 
 export const getLevels = createAsyncThunk(
   "levels/getLevels",
-  async (id, thunkAPI) => {
+  async ({ stageId, getPath }, thunkAPI) => {
     try {
-      const res = await axiosRequest.get(`api/books/levels?stage=${id}`);
+      const res = await getDataAndHandleBreadCrumb({
+        getPath,
+        url: `api/books/levels?stage=${stageId}`,
+      });
+
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
@@ -40,9 +48,13 @@ export const getLevels = createAsyncThunk(
 
 export const getSubLevels = createAsyncThunk(
   "levels/getSubLevels",
-  async (id, thunkAPI) => {
+  async ({ levelId, getPath }, thunkAPI) => {
     try {
-      const res = await axiosRequest.get(`api/books/levels?parent=${id}`);
+      const res = await getDataAndHandleBreadCrumb({
+        getPath,
+        url: `/api/books/levels?parent=${levelId}`,
+      });
+
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
@@ -64,9 +76,13 @@ export const getSemesters = createAsyncThunk(
 
 export const getSubjects = createAsyncThunk(
   "subjects/getSubjects",
-  async (id, thunkAPI) => {
+  async ({ semesterId, getPath }, thunkAPI) => {
     try {
-      const res = await axiosRequest.get(`/api/books/subjects?semester=${id}`);
+      const res = await getDataAndHandleBreadCrumb({
+        getPath,
+        url: `/api/books/subjects?semester=${semesterId}`,
+      });
+
       return filterCurrentYearBooks(res.data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
@@ -76,9 +92,12 @@ export const getSubjects = createAsyncThunk(
 
 export const getUnits = createAsyncThunk(
   "units/getUnits",
-  async (id, thunkAPI) => {
+  async ({ subjectId, getPath }, thunkAPI) => {
     try {
-      const res = await axiosRequest.get(`/api/books/units?subject=${id}`);
+      const res = await getDataAndHandleBreadCrumb({
+        getPath,
+        url: `/api/books/units?subject=${subjectId}`,
+      });
       return res.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);

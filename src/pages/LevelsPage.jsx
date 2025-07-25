@@ -7,9 +7,14 @@ import {
   getSemesters,
   addBreadcrumbItem,
   resetBreadcrumbPath,
-  getStages,
+  // getStages,
 } from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
+import {
+  // handlePushAndResetBreadCrumbState,
+  useBreadCrumbV2,
+} from "../hooks/useBreadCrumbV2";
+import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -23,11 +28,13 @@ const LevelsPage = () => {
   const { levels, loading, error, stages } = useSelector(
     (state) => state.category
   );
+  const { path: breadCrumbPath } = useBreadCrumbV2();
 
   useEffect(() => {
     if (stageId) {
-      dispatch(getLevels(stageId));
-      dispatch(getStages(stageId));
+      const state = window.history.state;
+      dispatch(getLevels({ stageId, getPath: !state?.breadCrumbPath?.length }));
+      // dispatch(getStages(stageId));
     }
   }, [dispatch, stageId]);
 
@@ -56,19 +63,45 @@ const LevelsPage = () => {
       })
     );
 
+    // handlePushAndResetBreadCrumbState({
+    //   id: level._id,
+    //   name: level.title,
+    //   to: `${location.pathname}${location.search || ""}`,
+    //   urlPath: `${location.pathname}${location.search || ""}`,
+    //   path: breadCrumbPath,
+    // });
+
+    const state = {
+      breadcrumbPath: [
+        ...breadCrumbPath,
+        {
+          label: level.title,
+          to: `${location.pathname}${location.search || ""}`,
+          id: level._id,
+        },
+      ],
+    };
+
     if (level.subLevels && level.subLevels.length > 0) {
-      navigate(`/subLevels?levelId=${level._id}`);
+      navigate(`/subLevels?levelId=${level._id}`, { state });
     } else {
       const resultAction = await dispatch(getSemesters(level._id));
       const data = resultAction.payload;
       if (Array.isArray(data) && data.length === 1) {
+        // state.breadcrumbPath.push({
+        //   label: data[0].title,
+        //   to: `${location.pathname}${location.search || ""}`,
+        //   id: data[0]._id,
+        // });
+
         dispatch(
           addBreadcrumbItem({
             title: data[0].title || "الفصل الدراسي",
             path: `/Subjects?semesterId=${data[0]._id}`,
           })
         );
-        navigate(`/Subjects?semesterId=${data[0]._id}`);
+
+        navigate(`/Subjects?semesterId=${data[0]._id}`, { state });
       }
     }
   };
@@ -76,7 +109,8 @@ const LevelsPage = () => {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100">
       {/* Breadcrumb */}
-      <Breadcrumb />
+      {/* <Breadcrumb /> */}
+      <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="المواد الدراسية والمراحل الفرعية" />
 
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">الصفوف الدراسية</h1>

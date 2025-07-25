@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { FaLayerGroup } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation /* useNavigate */ } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getUnits,
@@ -12,6 +12,8 @@ import {
   getSemesters,
 } from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb"; // ✅
+import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
+import BreadcrumbV2 from "../components/BreadcrumbV2";
 const useQuery = () => new URLSearchParams(useLocation().search);
 
 const UnitsPage = () => {
@@ -19,6 +21,8 @@ const UnitsPage = () => {
   const subjectId = query.get("subjectId");
 
   const dispatch = useDispatch();
+  // const navigate = useNavigate();
+  const { path: breadCrumbPath } = useBreadCrumbV2();
 
   const { levels, units, stages, subjects, semesters, loading, error } =
     useSelector((state) => ({
@@ -33,9 +37,13 @@ const UnitsPage = () => {
   // تحميل الوحدات
   useEffect(() => {
     if (subjectId) {
-      dispatch(getUnits(subjectId));
+      const state = window.history.state;
+      dispatch(
+        getUnits({ subjectId, getPath: !state?.breadCrumbPath?.length })
+      );
     }
-  }, [dispatch, subjectId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subjectId]);
 
   // تحميل البيانات الأساسية لو مش موجودة
   useEffect(() => {
@@ -123,7 +131,9 @@ const UnitsPage = () => {
 
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100 ">
-      <Breadcrumb />
+      {/* <Breadcrumb /> */}
+
+      <BreadcrumbV2 data={breadCrumbPath} />
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">الوحدات الدراسية</h1>
 
