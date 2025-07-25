@@ -96,7 +96,7 @@ export const resetBreadCrumbState = ({ setPath, path }) => {
   }
 
   setPath(path);
-  window.history.replaceState({ breadcrumbTrail: path }, "");
+  window.history.replaceState({ breadcrumbPath: path }, "");
   return;
 };
 
