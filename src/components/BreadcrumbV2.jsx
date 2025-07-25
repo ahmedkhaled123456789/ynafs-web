@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 const mainCrumb = { label: "الرئيسية", _id: Date.now(), to: "/" };
-const pageCrumb = { label: "", _id: Date.now() };
+const pageCrumb = { label: "", _id: Date.now() + 1 };
 
 /**
  *

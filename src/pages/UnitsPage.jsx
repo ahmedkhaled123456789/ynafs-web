@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { FaLayerGroup } from "react-icons/fa";
+import { FaChevronDown, FaLayerGroup } from "react-icons/fa";
 import { Link, useLocation /* useNavigate */ } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -25,15 +25,7 @@ const UnitsPage = () => {
   const { path: breadCrumbPath } = useBreadCrumbV2();
 
   const { levels, units, stages, subjects, semesters, loading, error } =
-    useSelector((state) => ({
-      units: state.category.units,
-      subjects: state.category.subjects,
-      semesters: state.category.semesters,
-      levels: state.category.levels,
-      loading: state.category.loading.units,
-      error: state.category.error.units,
-      stages: state.category.stages,
-    }));
+    useSelector((state) => state.category);
   // تحميل الوحدات
   useEffect(() => {
     if (subjectId) {
@@ -137,23 +129,39 @@ const UnitsPage = () => {
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">الوحدات الدراسية</h1>
 
-        {loading && <p className="text-gray-500">جاري التحميل...</p>}
-        {error && <p className="text-red-500">{error}</p>}
+        {loading?.units && <p className="text-gray-500">جاري التحميل...</p>}
+        {error?.units && <p className="text-red-500">{error.units}</p>}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-6xl">
+        <div className="flex flex-col gap-3 w-full max-w-6xl">
           {units.map((unit, index) => (
-            <Link
-              to={`/Lessons?unitId=${unit._id}`}
-              key={unit._id || index}
-              className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:bg-[#0093e9] hover:text-white transition"
-            >
-              <div className="mb-4">
-                <FaLayerGroup size={70} />
+            <div key={unit._id || index}>
+              <div
+                className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:bg-[#0093e9] hover:text-white transition"
+                // className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:bg-[#0093e9] hover:text-white transition"
+              >
+                <div className="text-lg font-semibold !text-right w-full flex items-center justify-between">
+                  <div>{unit.title}</div>
+                  <div>
+                    <FaChevronDown className="rotate-180" />
+                  </div>
+                </div>
               </div>
-              <div className="text-lg font-semibold text-center">
-                {unit.title}
-              </div>
-            </Link>
+
+              {unit.chapters?.length ? (
+                unit.chapters.map((chapter) => {
+                  return (
+                    <div
+                      key={chapter._id || index}
+                      className="bg-gray-200 cursor-pointer shadow-md p-2 hover:bg-[#0093e9] hover:text-white transition text-right w-full"
+                    >
+                      <div>{chapter.title}</div>
+                    </div>
+                  );
+                })
+              ) : (
+                <></>
+              )}
+            </div>
           ))}
         </div>
       </div>

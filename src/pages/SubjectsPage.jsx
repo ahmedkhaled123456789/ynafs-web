@@ -138,12 +138,18 @@ const SubjectsPage = () => {
             <div
               key={subject._id || index}
               className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center text-center"
-              onClick={() => handleSubjectClick(subject)}
             >
-              <div className="mb-4 text-blue-600">
-                <FaBook size={70} />
+              <div
+                onClick={() => handleSubjectClick(subject)}
+                className="cursor-pointer flex flex-col items-center justify-center text-center"
+              >
+                <div className="mb-4 text-blue-600">
+                  <FaBook size={70} />
+                </div>
+                <div className="text-lg font-semibold mb-4 underline">
+                  {subject.title}
+                </div>
               </div>
-              <div className="text-lg font-semibold mb-4">{subject.title}</div>
 
               {subject.books && subject.books.length > 0 ? (
                 subject.books.map((book) =>

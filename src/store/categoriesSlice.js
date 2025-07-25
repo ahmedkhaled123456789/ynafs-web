@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { filterCurrentYearBooks } from "../handlers";
+import { assignChaptersToUnits, filterCurrentYearBooks } from "../handlers";
 import axiosRequest from "../Api/axiosRequest";
 import {
   getDataAndHandleBreadCrumb,
@@ -98,7 +98,7 @@ export const getUnits = createAsyncThunk(
         getPath,
         url: `/api/books/units?subject=${subjectId}`,
       });
-      return res.data;
+      return assignChaptersToUnits(res.data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
