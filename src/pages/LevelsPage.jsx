@@ -8,7 +8,7 @@ import {
   // getStages,
 } from "../store/categoriesSlice";
 import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
-import BreadcrumbV2 from "../components/BreadcrumbV2";
+// import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -19,7 +19,8 @@ const LevelsPage = () => {
   const stageId = query.get("stageId");
   const dispatch = useDispatch();
   const { levels, loading, error } = useSelector((state) => state.category);
-  const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
+  const { /* path: breadCrumbPath, */ navigateAndPushState } =
+    useBreadCrumbV2();
 
   useEffect(() => {
     if (stageId) {
@@ -58,10 +59,10 @@ const LevelsPage = () => {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100">
       {/* Breadcrumb */}
-      <BreadcrumbV2
+      {/* <BreadcrumbV2
         data={breadCrumbPath}
         nextPageTitle="المواد الدراسية والمراحل الفرعية"
-      />
+      /> */}
 
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">الصفوف الدراسية</h1>

@@ -1,22 +1,25 @@
 import { Routes, Route } from "react-router-dom";
-import StagesPage from "../pages/StagesPage";
-import LevelsPage from "../pages/LevelsPage";
-import SemestersPage from "../pages/SemestersPage";
-import SubjectsPage from "../pages/SubjectsPage";
-import UnitsPage from "../pages/UnitsPage";
-import LessonsPage from "../pages/LessonsPage";
-import SubLevelsPage from "../pages/SubLevelsPage";
+import BreadCrumbAndNavLayout from "../layouts/BreadCrumbAndNavLayout";
+import { BreadCrumbLayoutRoutes } from "./BreadCrumbLayoutRoutes";
 
 const Routers = () => {
+  // const { path: breadCrumbPath } = useBreadCrumbV2();
+  //
   return (
     <Routes>
-      <Route path="/" element={<StagesPage to="/" />} />
-      <Route path="LevelsPage" element={<LevelsPage />} />
-      <Route path="subLevels" element={<SubLevelsPage />} />
-      <Route path="Semesters" element={<SemestersPage />} />
-      <Route path="Subjects" element={<SubjectsPage />} />
-      <Route path="Units" element={<UnitsPage />} />
-      <Route path="Lessons" element={<LessonsPage />} />
+      <Route path="/" element={<BreadCrumbAndNavLayout />}>
+        {
+          // eslint-disable-next-line no-unused-vars
+          BreadCrumbLayoutRoutes.map(({ path, Element, title, index }, i) => (
+            <Route
+              key={path || title || i}
+              index={index}
+              path={path}
+              element={<Element />}
+            />
+          ))
+        }
+      </Route>
     </Routes>
   );
 };

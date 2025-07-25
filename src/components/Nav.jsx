@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function Nav() {
   return (
     <div
@@ -6,13 +8,13 @@ function Nav() {
     >
       <div className="w-full flex justify-between flex-wrap items-center gap-4">
         {/* Logo */}
-        <a href="/books">
+        <Link to="/">
           <img
             src="/books/images/android-chrome-512x512-removebg-preview.png"
             alt="Logo"
             className="w-24 h-24"
           />
-        </a>
+        </Link>
         {/* Title */}
         <h1 className="text-center text-2xl sm:text-3xl font-bold leading-relaxed">
           الكتب الدراسية لعام 1447 هـ

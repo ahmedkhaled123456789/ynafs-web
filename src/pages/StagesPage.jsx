@@ -1,13 +1,12 @@
 import { useSelector } from "react-redux";
 import { FaSchool, FaUserGraduate, FaUniversity } from "react-icons/fa";
-import {
-  useBreadCrumbV2,
-} from "../hooks/useBreadCrumbV2";
-import BreadcrumbV2 from "../components/BreadcrumbV2";
+import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
+// import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const StagesPage = () => {
   const { stages, loading, error } = useSelector((state) => state.category);
-  const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
+  const { /* path: breadCrumbPath, */ navigateAndPushState } =
+    useBreadCrumbV2();
 
   // useEffect(() => {
   //   const catId = categories?.[0]?._id;
@@ -27,7 +26,7 @@ const StagesPage = () => {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100 flex flex-col">
       {/* Breadcrumb */}
-      <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="الصفوف الدراسية" />
+      {/* <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="الصفوف الدراسية" /> */}
 
       <div className="flex flex-col items-center p-12">
         <h2 className="text-3xl font-bold mb-8">المراحل الدراسية</h2>

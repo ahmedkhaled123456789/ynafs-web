@@ -2,12 +2,9 @@ import { useEffect } from "react";
 import { FaBookOpen } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getSubLevels,
-  getSemesters,
-} from "../store/categoriesSlice";
+import { getSubLevels, getSemesters } from "../store/categoriesSlice";
 import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
-import BreadcrumbV2 from "../components/BreadcrumbV2";
+// import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const useQuery = () => {
   return new URLSearchParams(useLocation().search);
@@ -17,12 +14,11 @@ const SubLevelsPage = () => {
   const query = useQuery();
   const levelId = query.get("levelId");
   const dispatch = useDispatch();
-  const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
+  const { /* path: breadCrumbPath, */ navigateAndPushState } =
+    useBreadCrumbV2();
 
   // نجيب subLevels والloading والerror
-  const { subLevels, loading, error } = useSelector(
-    (state) => state.category
-  );
+  const { subLevels, loading, error } = useSelector((state) => state.category);
 
   // 1. Load data when levelId changes
   useEffect(() => {
@@ -56,7 +52,7 @@ const SubLevelsPage = () => {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100">
       {/* Breadcrumb */}
-      <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="المواد الدراسية" />
+      {/* <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="المواد الدراسية" /> */}
 
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">الصفوف الفرعية</h1>

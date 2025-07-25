@@ -10,7 +10,7 @@ import {
 } from "../store/categoriesSlice";
 import { baseURL } from "../Api/axiosRequest";
 import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
-import BreadcrumbV2 from "../components/BreadcrumbV2";
+// import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const useQuery = () => new URLSearchParams(useLocation().search);
 
@@ -19,7 +19,8 @@ const SubjectsPage = () => {
   const semesterId = query.get("semesterId");
 
   const dispatch = useDispatch();
-  const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
+  const { /* path: breadCrumbPath,  */ navigateAndPushState } =
+    useBreadCrumbV2();
 
   const { subjects, loading, error, semesters, levels, stages } = useSelector(
     (state) => state.category
@@ -61,7 +62,7 @@ const SubjectsPage = () => {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100">
       {/* Breadcrumb */}
-      <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="الوحدات الدراسية" />
+      {/* <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="الوحدات الدراسية" /> */}
 
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">المواد الدراسية</h1>

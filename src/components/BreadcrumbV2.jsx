@@ -42,6 +42,7 @@ const BreadcrumbV2 = (props) => {
               ) : (
                 <Link
                   to={item.to}
+                  // replace
                   className="flex h-10 items-center pe-4 ps-8 text-xs font-medium text-blue-600 hover:text-blue-800"
                 >
                   {item.label}
