@@ -1,29 +1,17 @@
-import { Outlet /* , useLocation */ } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
 import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
 import Nav from "../components/Nav";
-// import { BreadCrumbLayoutRoutes } from "../Routes/BreadCrumbLayoutRoutes";
+import { BreadCrumbLayoutRoutes } from "../Routes/BreadCrumbLayoutRoutes";
 
 function BreadCrumbAndNavLayout() {
   const { path: breadCrumbPath } = useBreadCrumbV2();
-  // const location = useLocation();
-  // const currentPath = location.pathname.replace(/^\//, ""); // remove leading slash
+  const location = useLocation();
+  const currentPath = location.pathname.replace(/^\//, ""); // remove leading slash
 
-  // const currentIndex = BreadCrumbLayoutRoutes.findIndex(
-  //   (route) => route.path === currentPath || (route.index && currentPath === "")
-  // );
-
-  // let nextRoute = BreadCrumbLayoutRoutes[currentIndex + 1];
-
-  // if (nextRoute?.path?.includes("subLevels")) {
-  //   nextRoute = {
-  //     ...nextRoute,
-  //     title: `${nextRoute.title} و ${
-  //       BreadCrumbLayoutRoutes.find((e) => e.path?.includes("Subjects")).title ||
-  //       ""
-  //     }`,
-  //   };
-  // }
+  const currentRoute = BreadCrumbLayoutRoutes.find(
+    (route) => route.path === currentPath || (route.index && currentPath === "")
+  );
 
   return (
     <>
@@ -31,7 +19,7 @@ function BreadCrumbAndNavLayout() {
       <div className="bg-gray-100">
         <BreadcrumbV2
           data={breadCrumbPath}
-          // nextPageTitle={nextRoute?.title || ""}
+          nextPageTitle={currentRoute?.nextPageTitle || ""}
         />
         <div>
           <Outlet />
