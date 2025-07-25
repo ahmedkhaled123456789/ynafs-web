@@ -93,7 +93,7 @@ const UnitsPage = () => {
                 <div className="text-lg font-semibold !text-right w-full flex items-center justify-between flex-wrap">
                   <div>{unit.title}</div>
                   <div className="flex gap-2 items-center flex-wrap">
-                    {unit.isNew && (
+                    {unit.isNewThisYear && (
                       <span className="bg-emerald-500 text-white text-sm font-semibold px-5 text-center py-0.5 rounded-full">
                         جديد
                       </span>
@@ -134,7 +134,7 @@ const UnitsPage = () => {
                       onClick={() => handleUnitClick(chapter)}
                     >
                       <div>{chapter.title}</div>
-                      {chapter.isNew && (
+                      {chapter.isNewThisYear && (
                         <span className="bg-emerald-500 text-white text-sm font-semibold px-5 text-center py-0.5 rounded-full">
                           جديد
                         </span>
