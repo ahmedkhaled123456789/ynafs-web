@@ -34,7 +34,7 @@ const LevelsPage = () => {
     const breadcrumb = [
       {
         label: level.title,
-        to: `/LevelsPage${location.search || ""}`,
+        // to: `/LevelsPage${location.search || ""}`,
         id: level._id,
       },
     ];

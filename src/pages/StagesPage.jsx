@@ -19,7 +19,7 @@ const StagesPage = () => {
   const handleStageClick = (stage) => {
     navigateAndPushState(`/LevelsPage?stageId=${stage._id}`, {
       label: stage.title,
-      to: "/",
+      // to: "/",
       id: stage._id,
     });
   };
