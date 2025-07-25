@@ -4,7 +4,7 @@ function Nav() {
       className="bg-[#0093e9] text-white px-6 py-6 shadow-md"
       style={{ direction: "rtl" }}
     >
-      <div className="w-full flex flex-between flex-wrap items-center gap-4">
+      <div className="w-full flex justify-between flex-wrap items-center gap-4">
         {/* Logo */}
         <a href="/books">
           <img
