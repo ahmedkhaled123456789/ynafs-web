@@ -13,7 +13,6 @@ import {
 import { baseURL } from "../Api/axiosRequest";
 import Breadcrumb from "../components/Breadcrumb";
 import {
-  useBreadcrumbNavigate,
   useBreadCrumbV2,
 } from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
@@ -25,8 +24,7 @@ const SubjectsPage = () => {
   const semesterId = query.get("semesterId");
 
   const dispatch = useDispatch();
-  const { path: breadCrumbPath } = useBreadCrumbV2();
-  const navigateAndPushState = useBreadcrumbNavigate();
+  const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
 
   const { subjects, loading, error, semesters, levels, stages } = useSelector(
     (state) => state.category

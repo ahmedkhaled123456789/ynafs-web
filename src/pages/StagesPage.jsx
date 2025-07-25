@@ -7,16 +7,14 @@ import {
 } from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
 import {
-  useBreadcrumbNavigate,
   useBreadCrumbV2,
 } from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const StagesPage = () => {
   const dispatch = useDispatch();
-  const navigateAndPushState = useBreadcrumbNavigate();
   const { stages, loading, error } = useSelector((state) => state.category);
-  const { path: breadCrumbPath } = useBreadCrumbV2();
+  const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
 
   useEffect(() => {
     // dispatch(getCategories());

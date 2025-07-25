@@ -2,15 +2,6 @@ import { useEffect } from "react";
 import { useBreadcrumbStore } from "../store/breadcrumbStore";
 import axiosRequest from "../Api/axiosRequest";
 import { useNavigate } from "react-router-dom";
-
-// export const useBreadCrumbV2 = () => {
-//   const breadcrumbPath = useSelector(
-//     (state) => state.category.breadcrumbPathV2
-//   );
-
-//   return { breadcrumbPath, getPath: breadcrumbPath.length <= 1 };
-// };
-
 /**
  *
  * @returns {{
@@ -18,10 +9,33 @@ import { useNavigate } from "react-router-dom";
  *    push: () => void;
  *    setPath: resetParams['setPath'];
  *    clear: () => void;
+ *    navigateAndPushState: (to: string, breadcrumb: BreadcrumbItem | BreadcrumbItem[]) => void
  *}}
  */
 export const useBreadCrumbV2 = () => {
+  const navigate = useNavigate();
   const { path, clear, setPath, push } = useBreadcrumbStore();
+
+  /**
+   *
+   * @param {string} to
+   * @param {BreadcrumbItem | BreadcrumbItem[]} breadcrumb
+   */
+  function navigateAndPushState(to, breadcrumb) {
+    const base = import.meta.env.BASE_URL || "/";
+    const fullPath = base.replace(/\/$/, "") + to;
+    const newPath = [
+      ...path,
+      ...(Array.isArray(breadcrumb) ? breadcrumb : [breadcrumb]),
+    ];
+
+    setPath(newPath);
+    navigate(to);
+
+    setTimeout(() => {
+      window.history.replaceState({ breadcrumbPath: newPath }, "", fullPath);
+    }, 0);
+  }
 
   useEffect(() => {
     const state = window.history.state;
@@ -34,10 +48,27 @@ export const useBreadCrumbV2 = () => {
         path: [],
       });
     }
+
+    /**
+     *
+     * @param {PopStateEvent} event
+     */
+    const handlePopState = (event) => {
+      const state = event.state;
+      if (state?.breadcrumbPath) {
+        setPath(state.breadcrumbPath); // replace Zustand breadcrumb path
+      } else {
+        clear(); // fallback if no path exists
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => window.removeEventListener("popstate", handlePopState);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { path, push, setPath, clear };
+  return { path, push, setPath, clear, navigateAndPushState };
 };
 
 /**
@@ -120,50 +151,3 @@ export const getDataAndHandleBreadCrumb = async ({ getPath, url }) => {
 
   return res;
 };
-
-export function useBreadcrumbNavigate() {
-  const navigate = useNavigate();
-  const { path, setPath, clear } = useBreadcrumbStore();
-
-  /**
-   *
-   * @param {string} to
-   * @param {BreadcrumbItem | BreadcrumbItem[]} breadcrumb
-   */
-  function navigateAndPushState(to, breadcrumb) {
-    const base = import.meta.env.BASE_URL || "/";
-    const fullPath = base.replace(/\/$/, "") + to;
-    const newPath = [
-      ...path,
-      ...(Array.isArray(breadcrumb) ? breadcrumb : [breadcrumb]),
-    ];
-    console.log({ base, fullPath });
-    setPath(newPath);
-    navigate(to);
-    setTimeout(() => {
-      window.history.replaceState({ breadcrumbPath: newPath }, "", fullPath);
-    }, 0);
-  }
-
-  useEffect(() => {
-    /**
-     *
-     * @param {PopStateEvent} event
-     */
-    const handlePopState = (event) => {
-      const state = event.state;
-      if (state?.breadcrumbPath) {
-        setPath(state.breadcrumbPath); // replace Zustand breadcrumb path
-      } else {
-        clear(); // fallback if no path exists
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => window.removeEventListener("popstate", handlePopState);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return navigateAndPushState;
-}

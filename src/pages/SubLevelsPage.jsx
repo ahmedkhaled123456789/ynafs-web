@@ -9,10 +9,7 @@ import {
   resetBreadcrumbPath,
 } from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
-import {
-  useBreadcrumbNavigate,
-  useBreadCrumbV2,
-} from "../hooks/useBreadCrumbV2";
+import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const useQuery = () => {
@@ -23,8 +20,7 @@ const SubLevelsPage = () => {
   const query = useQuery();
   const levelId = query.get("levelId");
   const dispatch = useDispatch();
-  const { path: breadCrumbPath } = useBreadCrumbV2();
-  const navigateAndPushState = useBreadcrumbNavigate();
+  const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
 
   // نجيب subLevels والloading والerror
   const { subLevels, loading, error, levels, stages } = useSelector(
