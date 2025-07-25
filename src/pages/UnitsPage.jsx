@@ -32,7 +32,7 @@ const UnitsPage = () => {
     if (subjectId) {
       const state = window.history.state;
       dispatch(
-        getUnits({ subjectId, getPath: !state?.breadCrumbPath?.length })
+        getUnits({ subjectId, getPath: !state?.breadcrumbPath?.length })
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

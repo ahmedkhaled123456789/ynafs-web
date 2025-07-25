@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { FaBookOpen } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getSubLevels,
@@ -9,7 +9,10 @@ import {
   resetBreadcrumbPath,
 } from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
-import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
+import {
+  useBreadcrumbNavigate,
+  useBreadCrumbV2,
+} from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const useQuery = () => {
@@ -20,8 +23,8 @@ const SubLevelsPage = () => {
   const query = useQuery();
   const levelId = query.get("levelId");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { path: breadCrumbPath } = useBreadCrumbV2();
+  const navigateAndPushState = useBreadcrumbNavigate();
 
   // نجيب subLevels والloading والerror
   const { subLevels, loading, error, levels, stages } = useSelector(
@@ -33,7 +36,7 @@ const SubLevelsPage = () => {
     if (levelId) {
       const state = window.history.state;
       dispatch(
-        getSubLevels({ levelId, getPath: !state?.breadCrumbPath?.length })
+        getSubLevels({ levelId, getPath: !state?.breadcrumbPath?.length })
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -71,15 +74,10 @@ const SubLevelsPage = () => {
   }, [levelId]);
 
   const handleLevelClick = async (subLevel) => {
-    const state = {
-      breadcrumbPath: [
-        ...breadCrumbPath,
-        {
-          label: subLevel.title,
-          to: `${location.pathname}${location.search || ""}`,
-          id: subLevel._id,
-        },
-      ],
+    const breadcrumb = {
+      label: subLevel.title,
+      to: `${location.pathname}${location.search || ""}`,
+      id: subLevel._id,
     };
 
     if (subLevel) {
@@ -95,9 +93,9 @@ const SubLevelsPage = () => {
     const data = resultAction.payload;
 
     if (Array.isArray(data) && data.length === 1) {
-      navigate(`/Subjects?semesterId=${data[0]._id}`, state);
+      navigateAndPushState(`/Subjects?semesterId=${data[0]._id}`, breadcrumb);
     } else if (Array.isArray(data) && data.length > 1) {
-      navigate(`/Semesters?subLevelId=${subLevel._id}`, state);
+      navigateAndPushState(`/Semesters?subLevelId=${subLevel._id}`, breadcrumb);
     }
   };
 

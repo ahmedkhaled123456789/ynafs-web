@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useBreadcrumbStore } from "../store/breadcrumbStore";
 import axiosRequest from "../Api/axiosRequest";
+import { useNavigate } from "react-router-dom";
 
 // export const useBreadCrumbV2 = () => {
 //   const breadcrumbPath = useSelector(
@@ -187,3 +188,27 @@ export const getDataAndHandleBreadCrumb = async ({ getPath, url }) => {
 
   return res;
 };
+
+export function useBreadcrumbNavigate() {
+  const navigate = useNavigate();
+  const { path, setPath } = useBreadcrumbStore();
+
+  /**
+   *
+   * @param {string} to
+   * @param {{ label: string; _id?: string; to?: string; }} breadcrumb
+   */
+  function navigateAndPushState(to, breadcrumb) {
+    const base = import.meta.env.BASE_URL || "/";
+    const fullPath = base.replace(/\/$/, "") + to;
+    const newPath = [...path, breadcrumb];
+    console.log({ base, fullPath });
+    setPath(newPath);
+    navigate(to);
+    setTimeout(() => {
+      window.history.replaceState({ breadcrumbPath: newPath }, "", fullPath);
+    }, 0);
+  }
+
+  return navigateAndPushState;
+}

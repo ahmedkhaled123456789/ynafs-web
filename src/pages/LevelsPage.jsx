@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { FaBookOpen } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getLevels,
@@ -11,6 +11,7 @@ import {
 } from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
 import {
+  useBreadcrumbNavigate,
   // handlePushAndResetBreadCrumbState,
   useBreadCrumbV2,
 } from "../hooks/useBreadCrumbV2";
@@ -24,16 +25,17 @@ const LevelsPage = () => {
   const query = useQuery();
   const stageId = query.get("stageId");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { levels, loading, error, stages } = useSelector(
     (state) => state.category
   );
   const { path: breadCrumbPath } = useBreadCrumbV2();
+  const navigateAndPushState = useBreadcrumbNavigate();
 
   useEffect(() => {
     if (stageId) {
       const state = window.history.state;
-      dispatch(getLevels({ stageId, getPath: !state?.breadCrumbPath?.length }));
+      console.log({ state });
+      dispatch(getLevels({ stageId, getPath: !state?.breadcrumbPath?.length }));
       // dispatch(getStages(stageId));
     }
   }, [dispatch, stageId]);
@@ -71,19 +73,14 @@ const LevelsPage = () => {
     //   path: breadCrumbPath,
     // });
 
-    const state = {
-      breadcrumbPath: [
-        ...breadCrumbPath,
-        {
-          label: level.title,
-          to: `${location.pathname}${location.search || ""}`,
-          id: level._id,
-        },
-      ],
+    const breadcrumb = {
+      label: level.title,
+      to: `${location.pathname}${location.search || ""}`,
+      id: level._id,
     };
 
     if (level.subLevels && level.subLevels.length > 0) {
-      navigate(`/subLevels?levelId=${level._id}`, { state });
+      navigateAndPushState(`/subLevels?levelId=${level._id}`, breadcrumb);
     } else {
       const resultAction = await dispatch(getSemesters(level._id));
       const data = resultAction.payload;
@@ -101,7 +98,7 @@ const LevelsPage = () => {
           })
         );
 
-        navigate(`/Subjects?semesterId=${data[0]._id}`, { state });
+        navigateAndPushState(`/Subjects?semesterId=${data[0]._id}`, breadcrumb);
       }
     }
   };
@@ -110,7 +107,10 @@ const LevelsPage = () => {
     <div dir="rtl" className="min-h-screen bg-gray-100">
       {/* Breadcrumb */}
       {/* <Breadcrumb /> */}
-      <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="المواد الدراسية والمراحل الفرعية" />
+      <BreadcrumbV2
+        data={breadCrumbPath}
+        nextPageTitle="المواد الدراسية والمراحل الفرعية"
+      />
 
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">الصفوف الدراسية</h1>

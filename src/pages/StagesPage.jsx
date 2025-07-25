@@ -1,18 +1,20 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
 import { FaSchool, FaUserGraduate, FaUniversity } from "react-icons/fa";
 import {
   addBreadcrumbItem,
   resetBreadcrumbPath,
 } from "../store/categoriesSlice";
 import Breadcrumb from "../components/Breadcrumb";
-import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
+import {
+  useBreadcrumbNavigate,
+  useBreadCrumbV2,
+} from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const StagesPage = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigateAndPushState = useBreadcrumbNavigate();
   const { stages, loading, error } = useSelector((state) => state.category);
   const { path: breadCrumbPath } = useBreadCrumbV2();
 
@@ -49,13 +51,10 @@ const StagesPage = () => {
       })
     );
 
-    navigate(`/LevelsPage?stageId=${stage._id}`, {
-      state: {
-        breadcrumbPath: [
-          ...breadCrumbPath,
-          { label: stage.title, to: "/", id: stage._id },
-        ],
-      },
+    navigateAndPushState(`/LevelsPage?stageId=${stage._id}`, {
+      label: stage.title,
+      to: "/",
+      id: stage._id,
     });
   };
 

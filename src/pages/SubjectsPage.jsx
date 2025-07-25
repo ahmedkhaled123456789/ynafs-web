@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { FaBook, FaDownload } from "react-icons/fa";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getSubjects,
@@ -12,7 +12,10 @@ import {
 } from "../store/categoriesSlice";
 import { baseURL } from "../Api/axiosRequest";
 import Breadcrumb from "../components/Breadcrumb";
-import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
+import {
+  useBreadcrumbNavigate,
+  useBreadCrumbV2,
+} from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const useQuery = () => new URLSearchParams(useLocation().search);
@@ -22,8 +25,8 @@ const SubjectsPage = () => {
   const semesterId = query.get("semesterId");
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { path: breadCrumbPath } = useBreadCrumbV2();
+  const navigateAndPushState = useBreadcrumbNavigate();
 
   const { subjects, loading, error, semesters, levels, stages } = useSelector(
     (state) => state.category
@@ -34,7 +37,7 @@ const SubjectsPage = () => {
     if (semesterId) {
       const state = window.history.state;
       dispatch(
-        getSubjects({ semesterId, getPath: !state?.breadCrumbPath?.length })
+        getSubjects({ semesterId, getPath: !state?.breadcrumbPath?.length })
       );
     }
   }, [dispatch, semesterId]);
@@ -97,18 +100,13 @@ const SubjectsPage = () => {
   }, [dispatch, semesterId, semesters, levels, stages]);
 
   const handleSubjectClick = async (subject) => {
-    const state = {
-      breadcrumbPath: [
-        ...breadCrumbPath,
-        {
-          label: subject.title,
-          to: `${location.pathname}${location.search || ""}`,
-          id: subject._id,
-        },
-      ],
+    const breadcrumb = {
+      label: subject.title,
+      to: `${location.pathname}${location.search || ""}`,
+      id: subject._id,
     };
 
-    navigate(`/Units?subjectId=${subject._id}`, { state });
+    navigateAndPushState(`/Units?subjectId=${subject._id}`, breadcrumb);
   };
 
   return (
