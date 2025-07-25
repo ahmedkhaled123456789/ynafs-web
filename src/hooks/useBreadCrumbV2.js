@@ -22,36 +22,6 @@ import { useNavigate } from "react-router-dom";
  */
 export const useBreadCrumbV2 = () => {
   const { path, clear, setPath, push } = useBreadcrumbStore();
-  useEffect(() => {
-    const state = window.history.state;
-
-    if (state?.breadcrumbPath) {
-      setPath(state.breadcrumbPath);
-    } else {
-      resetBreadCrumbState({
-        path: [],
-      });
-    }
-
-    /**
-     *
-     * @param {PopStateEvent} event
-     */
-    const handlePopState = (event) => {
-      const state = event.state;
-      if (state?.breadcrumbPath) {
-        setPath(state.breadcrumbPath); // replace Zustand breadcrumb path
-      } else {
-        clear(); // fallback if no path exists
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => window.removeEventListener("popstate", handlePopState);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   return { path, push, setPath, clear };
 };
 
@@ -191,7 +161,7 @@ export const getDataAndHandleBreadCrumb = async ({ getPath, url }) => {
 
 export function useBreadcrumbNavigate() {
   const navigate = useNavigate();
-  const { path, setPath } = useBreadcrumbStore();
+  const { path, setPath, clear } = useBreadcrumbStore();
 
   /**
    *
@@ -209,6 +179,36 @@ export function useBreadcrumbNavigate() {
       window.history.replaceState({ breadcrumbPath: newPath }, "", fullPath);
     }, 0);
   }
+
+  useEffect(() => {
+    const state = window.history.state;
+
+    if (state?.breadcrumbPath) {
+      setPath(state.breadcrumbPath);
+    } else {
+      resetBreadCrumbState({
+        path: [],
+      });
+    }
+
+    /**
+     *
+     * @param {PopStateEvent} event
+     */
+    const handlePopState = (event) => {
+      const state = event.state;
+      if (state?.breadcrumbPath) {
+        setPath(state.breadcrumbPath); // replace Zustand breadcrumb path
+      } else {
+        clear(); // fallback if no path exists
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => window.removeEventListener("popstate", handlePopState);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return navigateAndPushState;
 }
