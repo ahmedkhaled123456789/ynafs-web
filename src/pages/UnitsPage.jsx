@@ -141,7 +141,12 @@ const UnitsPage = () => {
               >
                 <div className="text-lg font-semibold !text-right w-full flex items-center justify-between">
                   <div>{unit.title}</div>
-                  <div>
+                  <div className="flex gap-2 items-center">
+                    {unit.isNew && (
+                      <span className="bg-emerald-500 text-white text-sm font-semibold px-5 text-center py-0.5 rounded-full">
+                        جديد
+                      </span>
+                    )}
                     <FaChevronDown className="rotate-180" />
                   </div>
                 </div>
@@ -152,9 +157,14 @@ const UnitsPage = () => {
                   return (
                     <div
                       key={chapter._id || index}
-                      className="bg-gray-200 cursor-pointer shadow-md p-2 hover:bg-[#0093e9] hover:text-white transition text-right w-full"
+                      className="bg-gray-200 cursor-pointer shadow-md p-2 hover:bg-[#0093e9] hover:text-white transition text-right w-full flex items-center justify-between"
                     >
                       <div>{chapter.title}</div>
+                      {chapter.isNew && (
+                        <span className="bg-emerald-500 text-white text-sm font-semibold px-5 text-center py-0.5 rounded-full">
+                          جديد
+                        </span>
+                      )}
                     </div>
                   );
                 })
