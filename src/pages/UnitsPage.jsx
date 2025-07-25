@@ -4,14 +4,11 @@ import { Link, useLocation /* useNavigate */ } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getUnits,
-  addBreadcrumbItem,
-  resetBreadcrumbPath,
   getSubjects,
   getLevels,
   getStages,
   getSemesters,
 } from "../store/categoriesSlice";
-import Breadcrumb from "../components/Breadcrumb"; // ✅
 import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
 import { baseURL } from "../Api/axiosRequest";
@@ -63,70 +60,8 @@ const UnitsPage = () => {
     }
   }, [dispatch, subjectId, subjects, semesters, levels, stages]);
 
-  // بناء مسار التنقل Breadcrumb
-  useEffect(() => {
-    if (
-      subjectId &&
-      subjects.length &&
-      semesters.length &&
-      levels.length &&
-      stages.length
-    ) {
-      const currentSubject = subjects.find((sub) => sub._id === subjectId);
-      const semesterId = currentSubject?.semester;
-      const currentSemester = semesters.find((sem) => sem._id === semesterId);
-      const currentLevel = levels.find(
-        (lvl) => lvl._id === currentSemester?.level
-      );
-      const currentStage = stages.find(
-        (stg) => stg._id === currentLevel?.stage
-      );
-
-      dispatch(resetBreadcrumbPath());
-      dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
-
-      if (currentStage) {
-        dispatch(
-          addBreadcrumbItem({
-            title: currentStage.title,
-            path: `/LevelsPage?stageId=${currentStage._id}`,
-          })
-        );
-      }
-
-      if (currentLevel) {
-        dispatch(
-          addBreadcrumbItem({
-            title: currentLevel.title,
-            path: `/LevelsPage?levelId=${currentLevel._id}`,
-          })
-        );
-      }
-
-      if (currentSemester && currentSemester.title !== "الفصل الدراسي الأول") {
-        dispatch(
-          addBreadcrumbItem({
-            title: currentSemester.title,
-            path: `/Subjects?semesterId=${currentSemester._id}`,
-          })
-        );
-      }
-
-      if (currentSubject) {
-        dispatch(
-          addBreadcrumbItem({
-            title: currentSubject.title,
-            path: `/Units?subjectId=${currentSubject._id}`,
-          })
-        );
-      }
-    }
-  }, [dispatch, subjectId, subjects, semesters, levels, stages]);
-
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100 ">
-      {/* <Breadcrumb /> */}
-
       <BreadcrumbV2 data={breadCrumbPath} />
       <div className="flex flex-col items-center p-12">
         <h1 className="text-3xl font-bold mb-8">الوحدات الدراسية</h1>

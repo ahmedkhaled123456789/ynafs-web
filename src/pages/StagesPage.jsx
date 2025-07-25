@@ -1,27 +1,13 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { FaSchool, FaUserGraduate, FaUniversity } from "react-icons/fa";
-import {
-  addBreadcrumbItem,
-  resetBreadcrumbPath,
-} from "../store/categoriesSlice";
-import Breadcrumb from "../components/Breadcrumb";
 import {
   useBreadCrumbV2,
 } from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const StagesPage = () => {
-  const dispatch = useDispatch();
   const { stages, loading, error } = useSelector((state) => state.category);
   const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
-
-  useEffect(() => {
-    // dispatch(getCategories());
-    dispatch(resetBreadcrumbPath());
-
-    dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
-  }, [dispatch]);
 
   // useEffect(() => {
   //   const catId = categories?.[0]?._id;
@@ -31,13 +17,6 @@ const StagesPage = () => {
   // }, [dispatch, categories]);
 
   const handleStageClick = (stage) => {
-    dispatch(
-      addBreadcrumbItem({
-        title: stage.title,
-        path: `/LevelsPage?stageId=${stage._id}`,
-      })
-    );
-
     navigateAndPushState(`/LevelsPage?stageId=${stage._id}`, {
       label: stage.title,
       to: "/",
@@ -48,7 +27,6 @@ const StagesPage = () => {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100 flex flex-col">
       {/* Breadcrumb */}
-      {/* <Breadcrumb /> */}
       <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="الصفوف الدراسية" />
 
       <div className="flex flex-col items-center p-12">

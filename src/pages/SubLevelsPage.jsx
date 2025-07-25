@@ -5,10 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getSubLevels,
   getSemesters,
-  addBreadcrumbItem,
-  resetBreadcrumbPath,
 } from "../store/categoriesSlice";
-import Breadcrumb from "../components/Breadcrumb";
 import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
 
@@ -23,7 +20,7 @@ const SubLevelsPage = () => {
   const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
 
   // نجيب subLevels والloading والerror
-  const { subLevels, loading, error, levels, stages } = useSelector(
+  const { subLevels, loading, error } = useSelector(
     (state) => state.category
   );
 
@@ -39,52 +36,12 @@ const SubLevelsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelId]);
 
-  // 2. Build breadcrumb after levels and stages are available
-  useEffect(() => {
-    if (levelId && levels.length > 0 && stages.length > 0) {
-      dispatch(resetBreadcrumbPath());
-      dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
-
-      const currentLevel = levels.find((lvl) => lvl._id === levelId);
-      if (currentLevel) {
-        const currentStage = stages.find(
-          (stg) => stg._id === currentLevel.stage
-        );
-        if (currentStage) {
-          dispatch(
-            addBreadcrumbItem({
-              title: currentStage.title,
-              path: `/LevelsPage?stageId=${currentStage._id}`,
-            })
-          );
-        }
-
-        dispatch(
-          addBreadcrumbItem({
-            title: currentLevel.title,
-            path: `/LevelsPage?levelId=${levelId}`,
-          })
-        );
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [levelId]);
-
   const handleLevelClick = async (subLevel) => {
     const breadcrumb = {
       label: subLevel.title,
       to: `${location.pathname}${location.search || ""}`,
       id: subLevel._id,
     };
-
-    if (subLevel) {
-      dispatch(
-        addBreadcrumbItem({
-          title: subLevel.title,
-          path: `/Semesters?subLevelId=${subLevel._id}`,
-        })
-      );
-    }
 
     const resultAction = await dispatch(getSemesters(subLevel._id));
     const data = resultAction.payload;
@@ -99,7 +56,6 @@ const SubLevelsPage = () => {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100">
       {/* Breadcrumb */}
-      {/* <Breadcrumb /> */}
       <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="المواد الدراسية" />
 
       <div className="flex flex-col items-center p-12">

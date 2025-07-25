@@ -5,14 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getLevels,
   getSemesters,
-  addBreadcrumbItem,
-  resetBreadcrumbPath,
   // getStages,
 } from "../store/categoriesSlice";
-import Breadcrumb from "../components/Breadcrumb";
-import {
-  useBreadCrumbV2,
-} from "../hooks/useBreadCrumbV2";
+import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
 
 const useQuery = () => {
@@ -23,7 +18,7 @@ const LevelsPage = () => {
   const query = useQuery();
   const stageId = query.get("stageId");
   const dispatch = useDispatch();
-  const { levels, loading, error, stages } = useSelector(
+  const { levels, loading, error } = useSelector(
     (state) => state.category
   );
   const { path: breadCrumbPath, navigateAndPushState } = useBreadCrumbV2();
@@ -37,36 +32,14 @@ const LevelsPage = () => {
     }
   }, [dispatch, stageId]);
 
-  useEffect(() => {
-    if (stageId && stages.length > 0) {
-      dispatch(resetBreadcrumbPath());
-      dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
-
-      const currentStage = stages.find((s) => s._id === stageId);
-      if (currentStage) {
-        dispatch(
-          addBreadcrumbItem({
-            title: currentStage.title,
-            path: `/LevelsPage?stageId=${stageId}`,
-          })
-        );
-      }
-    }
-  }, [dispatch, stageId, stages]);
-
   const handleLevelClick = async (level) => {
-    dispatch(
-      addBreadcrumbItem({
-        title: level.title,
-        path: `/subLevels?levelId=${level._id}`,
-      })
-    );
-
-    const breadcrumb = {
-      label: level.title,
-      to: `${location.pathname}${location.search || ""}`,
-      id: level._id,
-    };
+    const breadcrumb = [
+      {
+        label: level.title,
+        to: `${location.pathname}${location.search || ""}`,
+        id: level._id,
+      },
+    ];
 
     if (level.subLevels && level.subLevels.length > 0) {
       navigateAndPushState(`/subLevels?levelId=${level._id}`, breadcrumb);
@@ -74,19 +47,11 @@ const LevelsPage = () => {
       const resultAction = await dispatch(getSemesters(level._id));
       const data = resultAction.payload;
       if (Array.isArray(data) && data.length === 1) {
-        // state.breadcrumbPath.push({
+        // breadcrumb.push({
         //   label: data[0].title,
         //   to: `${location.pathname}${location.search || ""}`,
         //   id: data[0]._id,
         // });
-
-        dispatch(
-          addBreadcrumbItem({
-            title: data[0].title || "الفصل الدراسي",
-            path: `/Subjects?semesterId=${data[0]._id}`,
-          })
-        );
-
         navigateAndPushState(`/Subjects?semesterId=${data[0]._id}`, breadcrumb);
       }
     }
@@ -95,7 +60,6 @@ const LevelsPage = () => {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100">
       {/* Breadcrumb */}
-      {/* <Breadcrumb /> */}
       <BreadcrumbV2
         data={breadCrumbPath}
         nextPageTitle="المواد الدراسية والمراحل الفرعية"

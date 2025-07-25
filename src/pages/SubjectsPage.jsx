@@ -4,14 +4,11 @@ import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getSubjects,
-  addBreadcrumbItem,
-  resetBreadcrumbPath,
   getLevels,
   getSemesters,
   getStages,
 } from "../store/categoriesSlice";
 import { baseURL } from "../Api/axiosRequest";
-import Breadcrumb from "../components/Breadcrumb";
 import {
   useBreadCrumbV2,
 } from "../hooks/useBreadCrumbV2";
@@ -53,51 +50,6 @@ const SubjectsPage = () => {
     }
   }, [dispatch, semesterId, semesters.length, levels.length, stages.length]);
 
-  // بناء مسار التنقل Breadcrumb بعد توفر البيانات
-  useEffect(() => {
-    if (semesterId && semesters.length && levels.length && stages.length) {
-      dispatch(resetBreadcrumbPath());
-      dispatch(addBreadcrumbItem({ title: "الرئيسية", path: "/" }));
-
-      const currentSemester = semesters.find((sem) => sem._id === semesterId);
-      if (currentSemester) {
-        const currentLevel = levels.find(
-          (lvl) => lvl._id === currentSemester.level
-        );
-        if (currentLevel) {
-          const currentStage = stages.find(
-            (stg) => stg._id === currentLevel.stage
-          );
-          if (currentStage) {
-            dispatch(
-              addBreadcrumbItem({
-                title: currentStage.title,
-                path: `/LevelsPage?stageId=${currentStage._id}`,
-              })
-            );
-          }
-
-          dispatch(
-            addBreadcrumbItem({
-              title: currentLevel.title,
-              path: `/LevelsPage?stageId=${currentLevel._id}`,
-            })
-          );
-        }
-
-        // ✅ تجاهل إضافة الفصل الدراسي الأول
-        if (currentSemester.title !== "الفصل الدراسي الأول") {
-          dispatch(
-            addBreadcrumbItem({
-              title: currentSemester.title,
-              path: `/Subjects?semesterId=${semesterId}`,
-            })
-          );
-        }
-      }
-    }
-  }, [dispatch, semesterId, semesters, levels, stages]);
-
   const handleSubjectClick = async (subject) => {
     const breadcrumb = {
       label: subject.title,
@@ -111,7 +63,6 @@ const SubjectsPage = () => {
   return (
     <div dir="rtl" className="min-h-screen bg-gray-100">
       {/* Breadcrumb */}
-      {/* <Breadcrumb /> */}
       <BreadcrumbV2 data={breadCrumbPath} nextPageTitle="الوحدات الدراسية" />
 
       <div className="flex flex-col items-center p-12">
