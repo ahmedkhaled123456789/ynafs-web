@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { FaChevronDown, FaLayerGroup } from "react-icons/fa";
+import { FaChevronDown, FaDownload, FaLayerGroup } from "react-icons/fa";
 import { Link, useLocation /* useNavigate */ } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -137,34 +137,12 @@ const UnitsPage = () => {
           {units.map((unit, index) => (
             <div key={unit._id || index}>
               <div
-                className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:bg-[#0093e9] hover:text-white transition"
+                className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:bg-[#0093e9] hover:text-white transition gap-3"
                 // className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center justify-center hover:bg-[#0093e9] hover:text-white transition"
               >
-                <div className="text-lg font-semibold !text-right w-full flex items-center justify-between">
+                <div className="text-lg font-semibold !text-right w-full flex items-center justify-between flex-wrap">
                   <div>{unit.title}</div>
-                  <div className="flex gap-2 items-center">
-                    {unit.subjectBooks &&
-                      unit.subjectBooks.length > 0 &&
-                      unit.subjectBooks.map((book) =>
-                        book.title.includes("غلاف ") ? null : (
-                          <a
-                            key={book.path}
-                            href={
-                              book?.path?.startsWith("http")
-                                ? book.path
-                                : (import.meta.env.DEV ? baseURL : "") +
-                                  book.path
-                            }
-                            download={book?.title + ".pdf"}
-                            className="mt-2 inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition"
-                          >
-                            <FaDownload />
-                            <span className="text-sm">
-                              {book.title.split("/")[1]?.trim() || book.title}
-                            </span>
-                          </a>
-                        )
-                      )}
+                  <div className="flex gap-2 items-center flex-wrap">
                     {unit.isNew && (
                       <span className="bg-emerald-500 text-white text-sm font-semibold px-5 text-center py-0.5 rounded-full">
                         جديد
@@ -173,6 +151,28 @@ const UnitsPage = () => {
                     <FaChevronDown className="rotate-180" />
                   </div>
                 </div>
+                <div className="w-full">
+                  {unit.subjectBooks &&
+                    unit.subjectBooks.map((book) =>
+                      book.title.includes("غلاف ") ? null : (
+                        <a
+                          key={book.path}
+                          href={
+                            book?.path?.startsWith("http")
+                              ? book.path
+                              : (import.meta.env.DEV ? baseURL : "") + book.path
+                          }
+                          download={book?.title + ".pdf"}
+                          className="mt-2 inline-flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition"
+                        >
+                          <FaDownload />
+                          <span className="text-sm">
+                            {book.title.split("/")[1]?.trim() || book.title}
+                          </span>
+                        </a>
+                      )
+                    )}
+                </div>
               </div>
 
               {unit.chapters?.length ? (
@@ -180,7 +180,7 @@ const UnitsPage = () => {
                   return (
                     <div
                       key={chapter._id || index}
-                      className="bg-gray-200 cursor-pointer shadow-md p-2 hover:bg-[#0093e9] hover:text-white transition text-right w-full flex items-center justify-between"
+                      className="bg-gray-200 cursor-pointer shadow-md p-2 hover:bg-[#0093e9] hover:text-white transition text-right w-full flex items-center justify-between flex-wrap"
                     >
                       <div>{chapter.title}</div>
                       {chapter.isNew && (
@@ -189,7 +189,6 @@ const UnitsPage = () => {
                         </span>
                       )}
                       {chapter.subjectBooks &&
-                        chapter.subjectBooks.length > 0 &&
                         chapter.subjectBooks.map((book) =>
                           book.title.includes("غلاف ") ? null : (
                             <a
