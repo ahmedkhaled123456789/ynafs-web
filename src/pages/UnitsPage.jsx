@@ -11,7 +11,8 @@ import {
 } from "../store/categoriesSlice";
 import { useBreadCrumbV2 } from "../hooks/useBreadCrumbV2";
 import BreadcrumbV2 from "../components/BreadcrumbV2";
-import { baseURL } from "../Api/axiosRequest";
+// import { baseURL } from "../Api/axiosRequest";
+
 const useQuery = () => new URLSearchParams(useLocation().search);
 
 const UnitsPage = () => {
@@ -101,7 +102,7 @@ const UnitsPage = () => {
                   </div>
                 </div>
                 <div className="w-full">
-                  {unit.subjectBooks &&
+                  {/* {unit.subjectBooks &&
                     unit.subjectBooks.map((book) =>
                       book.title.includes("غلاف ") ? null : (
                         <a
@@ -120,7 +121,7 @@ const UnitsPage = () => {
                           </span>
                         </a>
                       )
-                    )}
+                    )} */}
                 </div>
               </div>
 
@@ -138,7 +139,7 @@ const UnitsPage = () => {
                           جديد
                         </span>
                       )}
-                      {chapter.subjectBooks &&
+                      {/* {chapter.subjectBooks &&
                         chapter.subjectBooks.map((book) =>
                           book.title.includes("غلاف ") ? null : (
                             <a
@@ -158,7 +159,7 @@ const UnitsPage = () => {
                               </span>
                             </a>
                           )
-                        )}
+                        )} */}
                     </div>
                   );
                 })
