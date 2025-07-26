@@ -74,7 +74,7 @@ const SubjectsPage = () => {
           بعض الوحدات من الفصل الدراسي الثاني ، لذلك يرجى النظر إلى الوحدات
         </p>
         <p className="mb-4 text-xl text-center text-emerald-500 font-extrabold">
-          يتم التحديث باستمرار اخر تحديث بتاريخ: 27-01-1447 هـ
+          يتم التحديث باستمرار اخر تحديث بتاريخ: 30-01-1447 هـ
         </p>
 
         {loading.subjects && (
